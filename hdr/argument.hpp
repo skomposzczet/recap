@@ -4,16 +4,16 @@
 
 using OptionValue = std::optional<std::string>;
 
-template<typename T>
 class Argument
 {
+friend class ArgumentBuilder;
 public:
     OptionValue get() const {
         return value.has_value() ? value : default_val;
     };
 
     bool is_triggered(const std::string& option) {
-        return option == name || option == std::string(name[0]);
+        return option == name || (option.size() == 1 && option[0] == name[0]);
     }
 
 protected:
