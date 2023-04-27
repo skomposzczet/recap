@@ -34,6 +34,6 @@ clean:
 	@rm -rf $(OBJDIR)/
 
 install:
-	@cp $(OBJDIR)/$(TARGET) $(LIBDIR)
+	@cp $(OBJDIR)/$(TARGET) $(LIBDIR)/lib$(TARGET)
 
 -include $(DEPENDS)
