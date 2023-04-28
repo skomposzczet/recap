@@ -36,7 +36,7 @@ std::string Parser::extract_option(const std::string& str) {
     throw ParseError(std::string{"Unexpected item: "} + str + "; option should start with hyphen");
 }
 
-ArgumentsVecType::value_type& Parser::get_arg_by_option(const std::string& option) {
+ArgsVecType::value_type& Parser::get_arg_by_option(const std::string& option) {
     auto res = std::find_if(args.begin(), args.end(), [&option](const auto& arg){
         return arg->is_triggered(option);
     });
@@ -47,7 +47,7 @@ ArgumentsVecType::value_type& Parser::get_arg_by_option(const std::string& optio
     return *res;
 }
 
-void Parser::add_argument(ArgumentsVecType::value_type arg) {
+void Parser::add_argument(ArgsVecType::value_type arg) {
     args.push_back(arg);
 }
 

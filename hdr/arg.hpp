@@ -10,9 +10,9 @@ namespace rcp {
 
 using OptionValue = std::optional<std::string>;
 
-class Argument
+class Arg
 {
-friend class ArgumentBuilder;
+friend class ArgBuilder;
 public:
     OptionValue get() const;
     void set(const std::string& new_value);
@@ -26,17 +26,17 @@ protected:
     std::string description;
 };
 
-class ArgumentBuilder
+class ArgBuilder
 {
 public:
-    ArgumentBuilder(const std::string& name);
-    std::shared_ptr<Argument> get();
+    ArgBuilder(const std::string& name);
+    std::shared_ptr<Arg> get();
 
-    ArgumentBuilder& default_value(const std::string& def);
-    ArgumentBuilder& with_description(const std::string& description);
+    ArgBuilder& default_value(const std::string& def);
+    ArgBuilder& with_description(const std::string& description);
 
 private:
-    std::shared_ptr<Argument> arg;
+    std::shared_ptr<Arg> arg;
 };
 
 }

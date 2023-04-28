@@ -1,7 +1,7 @@
 #ifndef _PARSER_H_
 #define _PARSER_H_
 
-#include "argument.hpp"
+#include "arg.hpp"
 
 #include <string>
 #include <memory>
@@ -10,7 +10,7 @@
 #define NEW_PARSER(app_name) (*(Parser::build(app_name).get()))
 namespace rcp {
 
-using ArgumentsVecType = std::vector<std::shared_ptr<Argument>>;
+using ArgsVecType = std::vector<std::shared_ptr<Arg>>;
 class ParserBuilder;
 
 class Parser
@@ -19,7 +19,7 @@ friend class ParserBuilder;
 public:
     static std::unique_ptr<ParserBuilder> build(const std::string& app_name);
     void parse(int argv, char** argc);
-    void add_argument(ArgumentsVecType::value_type arg);
+    void add_argument(ArgsVecType::value_type arg);
 
     OptionValue get(const std::string& option) const;
 
@@ -32,10 +32,10 @@ private:
     std::string epilog;
     double version;
 
-    ArgumentsVecType args;
+    ArgsVecType args;
 
     std::string extract_option(const std::string& str);
-    ArgumentsVecType::value_type& get_arg_by_option(const std::string& option);
+    ArgsVecType::value_type& get_arg_by_option(const std::string& option);
     void display_help();
 };
 
