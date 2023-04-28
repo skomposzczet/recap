@@ -1,7 +1,7 @@
 TARGET = recap.so
 
 CXX = g++
-CXXFLAGS += -std=c++17 -Wall -Wextra -Ihdr -fPIC -g
+CXXFLAGS += -std=c++23 -Wall -Wextra -Ihdr -fPIC -g
 LFLAGS += -shared -lbfd
 
 DEP_FLAGS += -MMD -MP
@@ -35,5 +35,6 @@ clean:
 
 install:
 	@cp $(OBJDIR)/$(TARGET) $(LIBDIR)/lib$(TARGET)
+	@echo "Installed"
 
 -include $(DEPENDS)
