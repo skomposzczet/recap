@@ -8,7 +8,6 @@
 #include <vector>
 
 #define NEW_PARSER(app_name) (*(Parser::build(app_name).get()))
-
 namespace rcp {
 
 using ArgumentsVecType = std::vector<std::shared_ptr<Argument>>;
@@ -22,6 +21,8 @@ public:
     void parse(int argv, char** argc);
     void add_argument(ArgumentsVecType::value_type arg);
 
+    OptionValue get(const std::string& option) const;
+
 private:
     Parser() = default;
 
@@ -33,6 +34,8 @@ private:
 
     ArgumentsVecType args;
 
+    std::string extract_option(const std::string& str);
+    ArgumentsVecType::value_type& get_arg_by_option(const std::string& option);
     void display_help();
 };
 
