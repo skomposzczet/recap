@@ -30,6 +30,8 @@
 *.exe
 *.out
 *.app
+*.test
 
-# vscode
+# other
 .vscode
+googletest/
