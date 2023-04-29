@@ -7,7 +7,6 @@
 #include <memory>
 #include <vector>
 
-#define NEW_PARSER(app_name) (*(Parser::build(app_name).get()))
 namespace rcp {
 
 enum class ExtraOption {
@@ -17,13 +16,11 @@ enum class ExtraOption {
 };
 
 using ArgsVecType = std::vector<std::shared_ptr<Arg>>;
-class ParserBuilder;
 
 class Parser
 {
 friend class ParserBuilder;
 public:
-    static std::unique_ptr<ParserBuilder> build(const std::string& app_name);
     void parse(int argv, char** argc);
     void add_argument(ArgsVecType::value_type arg);
 
@@ -51,28 +48,6 @@ private:
     ArgsVecType::value_type& get_arg_by_option(const std::string& option);
     std::string help();
     std::string authors_help_str() const;
-};
-
-class ParserBuilder
-{
-public:
-    ParserBuilder(const std::string& name);
-
-    ParserBuilder& description(const std::string& description);
-    ParserBuilder& brief(const std::string& brief);
-    ParserBuilder& epilog(const std::string& epilog);
-    ParserBuilder& version(double version);
-    ParserBuilder& author(const std::string& new_author);
-    ParserBuilder& authors(std::initializer_list<std::string> authors);
-
-    ParserBuilder& help_enabled();    
-    ParserBuilder& version_enabled();    
-
-    Parser get() const;
-
-private:
-    Parser parser;
-
 };
 
 }
