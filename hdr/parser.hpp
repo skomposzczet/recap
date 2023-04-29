@@ -28,6 +28,9 @@ public:
     bool help_triggered() const;
     bool version_triggered() const;
 
+    std::string help() const;
+    std::string version() const;
+
 private:
     Parser();
 
@@ -35,7 +38,7 @@ private:
     std::string description;
     std::string brief;
     std::string epilog;
-    double version;
+    std::string _version;
     std::vector<std::string> authors;
 
     ExtraOption help_arg;
@@ -46,7 +49,6 @@ private:
     std::string extract_option(const std::string& str);
     bool parse_extra_args(const std::string& option);
     ArgsVecType::value_type& get_arg_by_option(const std::string& option);
-    std::string help();
     std::string authors_help_str() const;
 };
 

@@ -85,7 +85,7 @@ bool Parser::version_triggered() const {
     return version_arg == ExtraOption::triggered;
 }
 
-std::string Parser::help() { 
+std::string Parser::help() const { 
     std::string help_text = std::string{"\t"} + name + " - " + brief
         + "\n\n\t" + description + "\n\n";
 
@@ -115,6 +115,10 @@ std::string Parser::authors_help_str() const {
     for (const std::string& author: authors)
         begin += author + ", ";
     return begin + "\b\b \n";
+}
+
+std::string Parser::version() const {
+    return name + "(" + _version + ")";
 }
 
 }

@@ -14,7 +14,7 @@ public:
     ParserBuilder& description(const std::string& description);
     ParserBuilder& brief(const std::string& brief);
     ParserBuilder& epilog(const std::string& epilog);
-    ParserBuilder& version(double version);
+    ParserBuilder& version(const std::string& version);
     ParserBuilder& author(const std::string& new_author);
     ParserBuilder& authors(std::initializer_list<std::string> authors);
 

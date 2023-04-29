@@ -21,8 +21,8 @@ ParserBuilder& ParserBuilder::epilog(const std::string& epilog) {
     return *this;
 }
 
-ParserBuilder& ParserBuilder::version(double version) {
-    parser.version = version;
+ParserBuilder& ParserBuilder::version(const std::string& version) {
+    parser._version = version;
     return *this;
 }
 
