@@ -31,12 +31,14 @@ public:
     std::string brief;
     std::string epilog;
     double version;
+    std::vector<std::string> authors;
 
     ArgsVecType args;
 
     std::string extract_option(const std::string& str);
     ArgsVecType::value_type& get_arg_by_option(const std::string& option);
     std::string help();
+    std::string authors_help_str() const;
 };
 
 class ParserBuilder
@@ -44,10 +46,12 @@ class ParserBuilder
 public:
     ParserBuilder(const std::string& name);
 
-    ParserBuilder& description(const std::string& description) ;
+    ParserBuilder& description(const std::string& description);
     ParserBuilder& brief(const std::string& brief);
     ParserBuilder& epilog(const std::string& epilog);
     ParserBuilder& version(double version);
+    ParserBuilder& author(const std::string& new_author);
+    ParserBuilder& authors(std::initializer_list<std::string> authors);
 
     Parser get() const;
 

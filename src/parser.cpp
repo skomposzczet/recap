@@ -70,9 +70,23 @@ std::string Parser::help() {
         help_text += std::string{"\t\t"} + arg->help() + "\n";
     }
 
-    help_text += "\n\n\tversion: " + std::to_string(version) + "\n";
+    help_text += authors_help_str();
 
     return help_text;
+}
+
+std::string Parser::authors_help_str() const {
+    if (authors.empty())
+        return std::string{""};
+
+    std::string begin{"\n\n\t"};
+    if (authors.size() == 1u) 
+        return begin + "author: " + authors.at(0) + "\n";
+    
+    begin += "authors: ";
+    for (const std::string& author: authors)
+        begin += author + ", ";
+    return begin + "\b\b \n";
 }
 
 ParserBuilder::ParserBuilder(const std::string& name) {
@@ -96,6 +110,16 @@ ParserBuilder& ParserBuilder::epilog(const std::string& epilog) {
 
 ParserBuilder& ParserBuilder::version(double version) {
     parser.version = version;
+    return *this;
+}
+
+ParserBuilder& ParserBuilder::author(const std::string& new_author) {
+    parser.authors.push_back(new_author);
+    return *this;
+}
+
+ParserBuilder& ParserBuilder::authors(std::initializer_list<std::string> authors) {
+    parser.authors.insert(parser.authors.end(), authors.begin(), authors.end());
     return *this;
 }
 
