@@ -7,17 +7,24 @@
 
 namespace rcp {
 
+Parser::Parser() 
+    : help_arg{ExtraOption::disabled}, version_arg{ExtraOption::disabled}
+{}
+
 std::unique_ptr<ParserBuilder> Parser::build(const std::string& app_name) {
     return std::make_unique<ParserBuilder>(app_name);
 }
 
 void Parser::parse(int argc, char** argv) {
-    if (argc % 2 == 0)
-        throw ParseError(std::string{"Invalid number of args: "} + std::to_string(argc));
-
     for (int i = 1 ; i < argc ; ++i) {
-        auto option = extract_option(argv[i++]);
+        auto option = extract_option(argv[i]);
+
+        if (parse_extra_args(option))
+            continue;
+
         auto& arg = get_arg_by_option(option);
+        if (++i >= argc)
+            throw ParseError("Missing value for option: " + option);
         arg->set(argv[i]);
     }
 }
@@ -34,6 +41,18 @@ std::string Parser::extract_option(const std::string& str) {
     }
 
     throw ParseError(std::string{"Unexpected item: "} + str + "; option should start with hyphen");
+}
+
+bool Parser::parse_extra_args(const std::string& option) {
+    if (help_arg == ExtraOption::enabled && option == "help") {
+        help_arg = ExtraOption::triggered;
+        return true;
+    }
+    if (version_arg == ExtraOption::enabled && option == "version") {
+        version_arg = ExtraOption::triggered;
+        return true;
+    }
+    return false;
 }
 
 ArgsVecType::value_type& Parser::get_arg_by_option(const std::string& option) {
@@ -62,13 +81,26 @@ OptionValue Parser::get(const std::string& option) const {
     return (*res)->get();
 }
 
+bool Parser::help_triggered() const {
+    return help_arg == ExtraOption::triggered;
+}
+
+bool Parser::version_triggered() const {
+    return version_arg == ExtraOption::triggered;
+}
+
 std::string Parser::help() { 
     std::string help_text = std::string{"\t"} + name + " - " + brief
         + "\n\n\t" + description + "\n\n";
 
+    const std::string arg_pre{"\t\t"}; 
     for (auto& arg: args) {
-        help_text += std::string{"\t\t"} + arg->help() + "\n";
+        help_text += arg_pre + arg->help() + "\n";
     }
+    if (help_arg == ExtraOption::enabled)
+        help_text += arg_pre + "--help\n";
+    if (version_arg == ExtraOption::enabled)
+        help_text += arg_pre + "--version\n";
 
     help_text += authors_help_str();
 
@@ -120,6 +152,16 @@ ParserBuilder& ParserBuilder::author(const std::string& new_author) {
 
 ParserBuilder& ParserBuilder::authors(std::initializer_list<std::string> authors) {
     parser.authors.insert(parser.authors.end(), authors.begin(), authors.end());
+    return *this;
+}
+
+ParserBuilder& ParserBuilder::help_enabled() {
+    parser.help_arg = ExtraOption::enabled;
+    return *this;
+}
+
+ParserBuilder& ParserBuilder::version_enabled() {
+    parser.version_arg = ExtraOption::enabled;
     return *this;
 }
 

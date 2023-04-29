@@ -10,6 +10,12 @@
 #define NEW_PARSER(app_name) (*(Parser::build(app_name).get()))
 namespace rcp {
 
+enum class ExtraOption {
+    disabled,
+    enabled,
+    triggered,
+};
+
 using ArgsVecType = std::vector<std::shared_ptr<Arg>>;
 class ParserBuilder;
 
@@ -22,9 +28,11 @@ public:
     void add_argument(ArgsVecType::value_type arg);
 
     OptionValue get(const std::string& option) const;
+    bool help_triggered() const;
+    bool version_triggered() const;
 
-public:
-    Parser() = default;
+private:
+    Parser();
 
     std::string name;
     std::string description;
@@ -33,9 +41,13 @@ public:
     double version;
     std::vector<std::string> authors;
 
+    ExtraOption help_arg;
+    ExtraOption version_arg;
+
     ArgsVecType args;
 
     std::string extract_option(const std::string& str);
+    bool parse_extra_args(const std::string& option);
     ArgsVecType::value_type& get_arg_by_option(const std::string& option);
     std::string help();
     std::string authors_help_str() const;
@@ -52,6 +64,9 @@ public:
     ParserBuilder& version(double version);
     ParserBuilder& author(const std::string& new_author);
     ParserBuilder& authors(std::initializer_list<std::string> authors);
+
+    ParserBuilder& help_enabled();    
+    ParserBuilder& version_enabled();    
 
     Parser get() const;
 
