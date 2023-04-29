@@ -50,7 +50,7 @@ $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 test: $(OBJDIR)/$(TARGET) $(TEST_OBJDIR)/$(TESTS) 
 	@./$(TEST_OBJDIR)/$(TESTS)
 
-$(TEST_OBJDIR)/$(TESTS): $(TEST_OBJECTS) $(TEST_OBJDIR)/gtest.a $(TEST_OBJDIR)/gtest_main.a
+$(TEST_OBJDIR)/$(TESTS): $(TEST_OBJECTS) $(OBJECTS) $(TEST_OBJDIR)/gtest.a $(TEST_OBJDIR)/gtest_main.a
 	$(CXX) $(CPPTESTFLAGS) $(CXXTESTFLAGS) $^ -o $@
 
 $(TEST_OBJECTS): $(TEST_OBJDIR)/%.o : $(TEST_SRCDIR)/%.cpp

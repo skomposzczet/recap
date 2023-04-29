@@ -21,7 +21,7 @@ class Parser
 {
 friend class ParserBuilder;
 public:
-    void parse(int argv, char** argc);
+    void parse(int argv, const char** argc);
     void add_argument(ArgsVecType::value_type arg);
 
     OptionValue get(const std::string& option) const;

@@ -11,7 +11,7 @@ Parser::Parser()
     : help_arg{ExtraOption::disabled}, version_arg{ExtraOption::disabled}
 {}
 
-void Parser::parse(int argc, char** argv) {
+void Parser::parse(int argc, const char** argv) {
     for (int i = 1 ; i < argc ; ++i) {
         auto option = extract_option(argv[i]);
 
