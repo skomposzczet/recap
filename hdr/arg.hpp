@@ -19,6 +19,8 @@ public:
 
     bool is_triggered(const std::string& option);
 
+    std::string help() const;
+
 protected:
     OptionValue value;
     OptionValue default_val;

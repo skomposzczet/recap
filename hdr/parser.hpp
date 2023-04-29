@@ -23,7 +23,7 @@ public:
 
     OptionValue get(const std::string& option) const;
 
-private:
+public:
     Parser() = default;
 
     std::string name;
@@ -36,7 +36,7 @@ private:
 
     std::string extract_option(const std::string& str);
     ArgsVecType::value_type& get_arg_by_option(const std::string& option);
-    void display_help();
+    std::string help();
 };
 
 class ParserBuilder

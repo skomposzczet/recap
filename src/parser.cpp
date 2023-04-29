@@ -62,8 +62,17 @@ OptionValue Parser::get(const std::string& option) const {
     return (*res)->get();
 }
 
-void Parser::display_help() { 
-    // todo
+std::string Parser::help() { 
+    std::string help_text = std::string{"\t"} + name + " - " + brief
+        + "\n\n\t" + description + "\n\n";
+
+    for (auto& arg: args) {
+        help_text += std::string{"\t\t"} + arg->help() + "\n";
+    }
+
+    help_text += "\n\n\tversion: " + std::to_string(version) + "\n";
+
+    return help_text;
 }
 
 ParserBuilder::ParserBuilder(const std::string& name) {
