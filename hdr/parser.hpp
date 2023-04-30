@@ -31,6 +31,8 @@ public:
     std::string help() const;
     std::string version() const;
 
+    const std::vector<std::string>& get_authors() const;
+
 private:
     Parser();
 

@@ -121,4 +121,8 @@ std::string Parser::version() const {
     return name + "(" + _version + ")";
 }
 
+const std::vector<std::string>& Parser::get_authors() const {
+    return authors;
+}
+
 }

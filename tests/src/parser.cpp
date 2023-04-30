@@ -46,3 +46,14 @@ TEST(ParserTest, disabledVersion_throwsParsingVersionOption) {
     const char* args[] = {TEST_APP_NAME, "--version"};
     ASSERT_THROW(parser.parse(2, args), ParseError);
 }
+
+TEST(ParserTest, addAuthors_returnsAuthors) {
+    std::vector<std::string> as{"a0", "a1", "a2", "a3"};
+    Parser parser = ParserBuilder(TEST_APP_NAME)
+        .author(as.at(0))
+        .author(as.at(1))
+        .authors({as.at(2), as.at(3)})
+        .get();
+    
+    ASSERT_EQ(as, parser.get_authors());
+}
