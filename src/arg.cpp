@@ -1,5 +1,6 @@
 #include "arg.hpp"
 #include "util.hpp"
+#include <format>
 
 namespace rcp {
 
@@ -16,11 +17,7 @@ bool Arg::is_triggered(const std::string& option) {
 }
 
 std::string Arg::help() const {
-    std::string help_text = std::string{"-"} + name[0];
-    help_text += std::string{"  --"} + name;
-    help_text += std::string{"  <"} + util::upper(name) + ">";
-    help_text += std::string("  ") + description;
-    return help_text;
+    return std::format("-{}  --{}  <{}>  {}", name[0], name, util::upper(name), description);
 }
 
 ArgBuilder::ArgBuilder(const std::string& name) 

@@ -35,3 +35,4 @@
 # other
 .vscode
 googletest/
+*.sh

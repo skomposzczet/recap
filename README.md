@@ -1,5 +1,11 @@
 # recap
 
+## Prerequisites
+1. Project build in `c++20`, therefore `gcc` in `13.1` version or higher is required:
+    ```bash
+    gcc --version
+    # gcc (GCC) 13.1.0
+    ```
 ## Building project
 1. Run makefile
     ```bash

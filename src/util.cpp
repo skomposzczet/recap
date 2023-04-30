@@ -1,5 +1,6 @@
 #include "util.hpp"
 #include <string>
+#include <algorithm>
 
 namespace rcp {
 
