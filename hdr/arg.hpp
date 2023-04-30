@@ -15,9 +15,9 @@ class Arg
 friend class ArgBuilder;
 public:
     OptionValue get() const;
-    void set(const std::string& new_value);
 
-    bool is_triggered(const std::string& option);
+    bool is_triggered(const std::string& option) const;
+    void set(const std::string& new_value);
 
     std::string help() const;
 

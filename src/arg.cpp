@@ -12,7 +12,7 @@ void Arg::set(const std::string& new_value) {
     value = new_value;
 }
 
-bool Arg::is_triggered(const std::string& option) {
+bool Arg::is_triggered(const std::string& option) const {
     return option == name || (option.size() == 1 && option[0] == name[0]);
 }
 
