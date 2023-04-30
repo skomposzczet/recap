@@ -6,6 +6,7 @@
 namespace rcp {
 
 constexpr char parse_title[]{"Parsing error"};
+constexpr char build_title[]{"Building error"};
 
 class RcpError: public std::exception
 {
@@ -26,6 +27,12 @@ class ParseError: public RcpError
 {
 public:
     ParseError(const std::string& message) : RcpError(titled_message(parse_title, message)) {}
+};
+
+class BuildError: public RcpError
+{
+public:
+    BuildError(const std::string& message) : RcpError(titled_message(build_title, message)) {}
 };
 
 }

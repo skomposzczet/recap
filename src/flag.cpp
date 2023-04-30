@@ -58,7 +58,7 @@ FlagBuilder& FlagBuilder::with_description(const std::string& description) {
 
 std::shared_ptr<Flag> FlagBuilder::get() {
     if (!flag->allow_long && !flag->allow_short)
-        throw RcpError("At least one trigger option is required ; consider allowing short or not forbidding long");
+        throw BuildError("At least one trigger option is required ; consider allowing short or not forbidding long");
     return flag;
 }
 

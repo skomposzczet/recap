@@ -52,7 +52,7 @@ TEST(FlagTest, forbidShortBuild_throwsOnBuild) {
     auto bldr = FlagBuilder(TEST_FLAG_NAME)
         .forbid_short();
 
-    ASSERT_THROW(bldr.get(), RcpError);
+    ASSERT_THROW(bldr.get(), BuildError);
 }
 
 TEST(FlagTest, descriptionSet_descriptionContainedInHelpString) {
