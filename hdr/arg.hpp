@@ -10,14 +10,12 @@
 
 namespace rcp {
 
-using OptionValue = std::optional<std::string>;
-
-class Arg: public IArg
+class Arg: public IValueArg
 {
 friend class ArgBuilder;
 public:
-    void set(const std::string& new_value);
-    OptionValue get() const;
+    void set(const std::string& new_value) override;
+    IValueArg::OptionValue get() const override;
 
     bool is_named(const std::string& arg_name) const override;
     bool is_triggered(const std::string& option) const override;
@@ -26,8 +24,8 @@ public:
     std::string help() const override;
 
 protected:
-    OptionValue value;
-    OptionValue default_val;
+    IValueArg::OptionValue value;
+    IValueArg::OptionValue default_val;
     std::string name;
     std::string description;
 };

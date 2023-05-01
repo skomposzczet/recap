@@ -4,7 +4,7 @@
 
 namespace rcp {
 
-OptionValue Arg::get() const {
+IValueArg::OptionValue Arg::get() const {
     return value.has_value() ? value : default_val;
 }
 

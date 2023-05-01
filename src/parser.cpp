@@ -67,7 +67,7 @@ void Parser::add_flag(FlagsVecType::value_type flag) {
     flags.push_back(flag);
 }
 
-OptionValue Parser::get(const std::string& arg_name) const {
+IValueArg::OptionValue Parser::get(const std::string& arg_name) const {
     auto res = std::find_if(args.begin(), args.end(), [&arg_name](const auto& arg){
         return arg->is_named(arg_name);
     });

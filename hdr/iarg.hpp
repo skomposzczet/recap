@@ -2,6 +2,7 @@
 #define _IARG_H_
 
 #include <string>
+#include <optional>
 
 namespace rcp {
 
@@ -14,6 +15,15 @@ public:
     virtual bool is_ambiguous(const IArg&) const = 0;
 
     virtual std::string help() const = 0;
+};
+
+class IValueArg: public IArg
+{
+public:
+    using OptionValue = std::optional<std::string>;
+
+    virtual void set(const std::string& new_value) = 0;
+    virtual IValueArg::OptionValue get() const = 0;
 };
 
 }
