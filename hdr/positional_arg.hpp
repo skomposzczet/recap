@@ -19,17 +19,18 @@ public:
 
     std::string help() const override;
 
-    unsigned get_order() const;
+    using order_type = unsigned;
+    order_type get_order() const;
 
 protected:
     OptionValue value;
     std::string name;
     std::string description;
 
-    unsigned order;
+    order_type order;
 
-    static unsigned highest_order;
-    static void update_highest_order(unsigned order);
+    static order_type highest_order;
+    static void update_highest_order(order_type order);
 };
 
 class PositionalArgBuilder
@@ -38,7 +39,7 @@ public:
     PositionalArgBuilder(const std::string& name);
     std::shared_ptr<PositionalArg> get();
 
-    PositionalArgBuilder& order(unsigned order);
+    PositionalArgBuilder& order(PositionalArg::order_type order);
     PositionalArgBuilder& with_description(const std::string& description);
 
 private:

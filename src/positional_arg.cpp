@@ -4,7 +4,7 @@
 
 namespace rcp {
 
-unsigned PositionalArg::highest_order{0};
+PositionalArg::order_type PositionalArg::highest_order{0};
 
 void PositionalArg::set(const std::string& new_value) {
     value = new_value;
@@ -30,11 +30,11 @@ std::string PositionalArg::help() const {
     return std::format("-{}  --{}  <{}>  {}", name[0], name, util::upper(name), description);
 }
 
-unsigned PositionalArg::get_order() const {
+order_type PositionalArg::get_order() const {
     return order;
 }
 
-void PositionalArg::update_highest_order(unsigned order) {
+void PositionalArg::update_highest_order(order_type order) {
     highest_order = ( highest_order > order ? highest_order : order + 1 );
 }
 
@@ -53,7 +53,7 @@ std::shared_ptr<PositionalArg> PositionalArgBuilder::get() {
     return arg;
 }
 
-PositionalArgBuilder& PositionalArgBuilder::order(unsigned order) {
+PositionalArgBuilder& PositionalArgBuilder::order(PositionalArg::order_type order) {
     arg->order = order;
     order_set = true;
 
