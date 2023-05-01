@@ -59,12 +59,16 @@ ArgsVecType::value_type& Parser::get_arg_by_option(const std::string& option) {
     return *res;
 }
 
+void Parser::add_flag(FlagsVecType::value_type flag) {
+    flags.push_back(flag);
+}
+
 void Parser::add_argument(ArgsVecType::value_type arg) {
     args.push_back(arg);
 }
 
-void Parser::add_flag(FlagsVecType::value_type flag) {
-    flags.push_back(flag);
+void Parser::add_positional_argument(PosArgsVecType::value_type arg) {
+    pos_args.push_back(arg);
 }
 
 IValueArg::OptionValue Parser::get(const std::string& arg_name) const {
