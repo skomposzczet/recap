@@ -1,7 +1,7 @@
 TARGET = recap.so
 
 CXX = g++
-CXXFLAGS += -std=c++20 -Wall -Wextra -Ihdr -fPIC -g
+CXXFLAGS += -std=c++20 -Wall -Wextra -Ihdr -fPIC -g -Werror
 LFLAGS += -shared
 
 DEP_FLAGS += -MMD -MP
@@ -25,7 +25,7 @@ GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
 GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 
 CPPTESTFLAGS += -isystem $(GTEST_DIR)/include
-CXXTESTFLAGS += -std=c++20 -g -Wall -Wextra -pthread -Ihdr
+CXXTESTFLAGS += -std=c++20 -g -Wall -Wextra -pthread -Ihdr -Werror
 
 TEST_SRCDIR = tests/src
 TEST_OBJDIR = tests/obj
