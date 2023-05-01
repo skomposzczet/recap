@@ -21,8 +21,9 @@ public:
     void add_argument(ArgsVecType::value_type arg);
     void add_flag(FlagsVecType::value_type arg);
 
-    OptionValue get(const std::string& option) const;
-    bool was_called(const std::string& option) const;
+    OptionValue get(const std::string& arg_name) const;
+    bool was_called(const std::string& arg_name) const;
+    
     bool help_triggered() const;
     bool version_triggered() const;
 

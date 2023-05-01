@@ -44,3 +44,15 @@ TEST(ArgTest, isTriggered_triggeredByShortAndLongVersion) {
     ASSERT_TRUE(arg->is_triggered(TEST_ARG_NAME));
     ASSERT_TRUE(arg->is_triggered(std::string{TEST_ARG_NAME[0]}));
 }
+
+TEST(ArgTest, ambiguousArgs_returnsTrue) {
+    auto arg1 = ArgBuilder(TEST_ARG_NAME).get();
+    auto arg2 = ArgBuilder(TEST_ARG_NAME).get();
+    ASSERT_TRUE(arg1->is_ambiguous(*arg2));
+}
+
+TEST(ArgTest, notAmbiguousArgs_returnsFalse) {
+    auto arg1 = ArgBuilder(TEST_ARG_NAME).get();
+    auto arg2 = ArgBuilder(TEST_ARG_NAME).get();
+    ASSERT_TRUE(arg1->is_ambiguous(*arg2));
+}

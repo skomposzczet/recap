@@ -1,22 +1,26 @@
 #ifndef _FLAG_H_
 #define _FLAG_H_
 
+#include "iarg.hpp"
+
 #include <string>
 #include <memory>
 
 namespace rcp {
 
 class FlagBuilder;
-class Flag
+class Flag: public IArg
 {
 friend class FlagBuilder;
 public:
+    void call();
     bool was_called() const;
 
-    bool is_triggered(const std::string& option) const;
-    void call();
+    bool is_named(const std::string& arg_name) const override;
+    bool is_triggered(const std::string& option) const override;
+    bool is_ambiguous(const IArg& other) const override;
 
-    std::string help() const;
+    std::string help() const override;
 
 private:
     std::string name;

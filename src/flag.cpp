@@ -8,6 +8,10 @@ bool Flag::was_called() const {
     return called;
 }
 
+bool Flag::is_named(const std::string& arg_name) const {
+    return arg_name == name;
+}
+
 bool Flag::is_triggered(const std::string& option) const {
     if (allow_short) {
         if (option == std::string{name[0]})
@@ -18,6 +22,17 @@ bool Flag::is_triggered(const std::string& option) const {
             return true;
     }
     return false;
+}
+
+bool Flag::is_ambiguous(const IArg& other) const {
+    int res = false;
+    if (allow_short) {
+        res += other.is_triggered(std::string{name[0]});
+    }
+    if (allow_long) {
+        res += other.is_triggered(name);
+    }
+    return res;
 }
 
 void Flag::call() {

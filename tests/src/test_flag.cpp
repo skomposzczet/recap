@@ -63,3 +63,15 @@ TEST(FlagTest, descriptionSet_descriptionContainedInHelpString) {
 
     ASSERT_TRUE(flag->help().find(desc) != std::string::npos);
 }
+
+TEST(FlagTest, ambiguousFlags_returnsTrue) {
+    auto flag1 = FlagBuilder(TEST_FLAG_NAME).get();
+    auto flag2 = FlagBuilder(TEST_FLAG_NAME).get();
+    ASSERT_TRUE(flag1->is_ambiguous(*flag2));
+}
+
+TEST(FlagTest, notAmbiguousFlags_returnsFalse) {
+    auto flag1 = FlagBuilder(TEST_FLAG_NAME).get();
+    auto flag2 = FlagBuilder("other_name").get();
+    ASSERT_FALSE(flag1->is_ambiguous(*flag2));
+}

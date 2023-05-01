@@ -67,13 +67,13 @@ void Parser::add_flag(FlagsVecType::value_type flag) {
     flags.push_back(flag);
 }
 
-OptionValue Parser::get(const std::string& option) const {
-    auto res = std::find_if(args.begin(), args.end(), [&option](const auto& arg){
-        return arg->is_triggered(option);
+OptionValue Parser::get(const std::string& arg_name) const {
+    auto res = std::find_if(args.begin(), args.end(), [&arg_name](const auto& arg){
+        return arg->is_named(arg_name);
     });
 
     if (res == args.end())
-        throw ParseError(std::string{"Unregistered arg: "} + option);
+        throw ParseError(std::string{"Unregistered arg: "} + arg_name);
 
     return (*res)->get();
 }
@@ -86,13 +86,13 @@ bool Parser::version_triggered() const {
     return was_called("version");
 }
 
-bool Parser::was_called(const std::string& option) const {
-    auto res = std::find_if(flags.begin(), flags.end(), [&option](const auto& flag){
-        return flag->is_triggered(option);
+bool Parser::was_called(const std::string& arg_name) const {
+    auto res = std::find_if(flags.begin(), flags.end(), [&arg_name](const auto& flag){
+        return flag->is_named(arg_name);
     });
 
     if (res == flags.end())
-        throw ParseError(std::string{"Unregistered flag: "} + option);
+        throw ParseError(std::string{"Unregistered flag: "} + arg_name);
 
     return (*res)->was_called();
 }
