@@ -3,6 +3,8 @@
 
 #include <string>
 
+namespace rcp {
+
 class IArg
 {
 public:
@@ -13,5 +15,7 @@ public:
 
     virtual std::string help() const = 0;
 };
+
+}
 
 #endif // _IARG_H_
