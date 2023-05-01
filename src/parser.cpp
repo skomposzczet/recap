@@ -7,15 +7,11 @@
 
 namespace rcp {
 
-Parser::Parser() 
-    : help_arg{ExtraOption::disabled}, version_arg{ExtraOption::disabled}
-{}
-
 void Parser::parse(int argc, const char** argv) {
     for (int i = 1 ; i < argc ; ++i) {
         auto option = extract_option(argv[i]);
 
-        if (parse_extra_args(option))
+        if (parse_flags(option))
             continue;
 
         auto& arg = get_arg_by_option(option);
@@ -39,16 +35,17 @@ std::string Parser::extract_option(const std::string& str) {
     throw ParseError(std::string{"Unexpected item: "} + str + "; option should start with hyphen");
 }
 
-bool Parser::parse_extra_args(const std::string& option) {
-    if (help_arg == ExtraOption::enabled && option == "help") {
-        help_arg = ExtraOption::triggered;
-        return true;
+bool Parser::parse_flags(const std::string& option) {
+    auto res = std::find_if(flags.begin(), flags.end(), [&option](const auto& flag){
+        return flag->is_triggered(option);
+    });
+
+    if (res == flags.end()) {
+        return false;
     }
-    if (version_arg == ExtraOption::enabled && option == "version") {
-        version_arg = ExtraOption::triggered;
-        return true;
-    }
-    return false;
+
+    (*res)->call();
+    return true;
 }
 
 ArgsVecType::value_type& Parser::get_arg_by_option(const std::string& option) {
@@ -66,37 +63,51 @@ void Parser::add_argument(ArgsVecType::value_type arg) {
     args.push_back(arg);
 }
 
+void Parser::add_flag(FlagsVecType::value_type flag) {
+    flags.push_back(flag);
+}
+
 OptionValue Parser::get(const std::string& option) const {
     auto res = std::find_if(args.begin(), args.end(), [&option](const auto& arg){
         return arg->is_triggered(option);
     });
 
     if (res == args.end())
-        throw ParseError(std::string{"Unregistered option: "} + option);
+        throw ParseError(std::string{"Unregistered arg: "} + option);
 
     return (*res)->get();
 }
 
 bool Parser::help_triggered() const {
-    return help_arg == ExtraOption::triggered;
+    return was_called("help");
 }
 
 bool Parser::version_triggered() const {
-    return version_arg == ExtraOption::triggered;
+    return was_called("version");
+}
+
+bool Parser::was_called(const std::string& option) const {
+    auto res = std::find_if(flags.begin(), flags.end(), [&option](const auto& flag){
+        return flag->is_triggered(option);
+    });
+
+    if (res == flags.end())
+        throw ParseError(std::string{"Unregistered flag: "} + option);
+
+    return (*res)->was_called();
 }
 
 std::string Parser::help() const { 
     std::string help_text = std::string{"\t"} + name + " - " + brief
         + "\n\n\t" + description + "\n\n";
 
-    const std::string arg_pre{"\t\t"}; 
+    const std::string arg_pre{"\t\t"};
     for (auto& arg: args) {
         help_text += arg_pre + arg->help() + "\n";
     }
-    if (help_arg == ExtraOption::enabled)
-        help_text += arg_pre + "--help\n";
-    if (version_arg == ExtraOption::enabled)
-        help_text += arg_pre + "--version\n";
+    for (auto& flag: flags) {
+        help_text += arg_pre + flag->help() + "\n";
+    }
 
     help_text += authors_help_str();
 

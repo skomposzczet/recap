@@ -37,12 +37,24 @@ ParserBuilder& ParserBuilder::authors(std::initializer_list<std::string> authors
 }
 
 ParserBuilder& ParserBuilder::help_enabled() {
-    parser.help_arg = ExtraOption::enabled;
+    parser.add_flag(
+        FlagBuilder("help")
+            .allow_long()
+            .forbid_short()
+            .with_description("Display information about application.")
+            .get()
+    );
     return *this;
 }
 
 ParserBuilder& ParserBuilder::version_enabled() {
-    parser.version_arg = ExtraOption::enabled;
+    parser.add_flag(
+        FlagBuilder("version")
+            .allow_long()
+            .forbid_short()
+            .with_description("Display information about version.")
+            .get()
+    );
     return *this;
 }
 

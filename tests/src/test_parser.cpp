@@ -4,9 +4,13 @@
 
 #include <string>
 
+#define SIZE(array, type) (sizeof(array) / (sizeof(type)))
+#define LOCAL_SIZE() SIZE(args, char*)
+
 using namespace rcp;
 
 constexpr char TEST_APP_NAME[]{"test app name"};
+constexpr char TEST_ARG_NAME[]{"test arg name"};
 
 TEST(ParserTest, enabledHelpVersion_isNotTriggered) {
     Parser parser = ParserBuilder(TEST_APP_NAME)
@@ -56,4 +60,37 @@ TEST(ParserTest, addAuthors_returnsAuthors) {
         .get();
     
     ASSERT_EQ(as, parser.get_authors());
+}
+
+TEST(ParserTest, addFlag_parsesFlag) {
+    Parser parser = ParserBuilder(TEST_APP_NAME)
+        .get();
+
+    parser.add_flag(
+        FlagBuilder(TEST_ARG_NAME)
+            .get()
+    );
+
+    const std::string arg = std::string{"-"} + TEST_ARG_NAME[0];
+    const char* args[] = {TEST_APP_NAME, arg.data()};
+
+    parser.parse(2, args);
+    ASSERT_TRUE(parser.was_called(TEST_ARG_NAME));
+}
+
+TEST(ParserTest, addArg_parsesArg) {
+    Parser parser = ParserBuilder(TEST_APP_NAME)
+        .get();
+
+    parser.add_argument(
+        ArgBuilder(TEST_ARG_NAME)
+            .get()
+    );
+
+    const std::string arg = std::string{"-"} + TEST_ARG_NAME[0];
+    const std::string val{"value"};
+    const char* args[] = {TEST_APP_NAME, arg.data(), val.data()};
+
+    parser.parse(LOCAL_SIZE(), args);
+    ASSERT_EQ(val, parser.get(TEST_ARG_NAME));
 }
