@@ -67,8 +67,8 @@ void Parser::add_argument(ArgsVecType::value_type arg) {
     args.push_back(arg);
 }
 
-void Parser::add_positional_argument(PosArgsVecType::value_type arg) {
-    pos_args.push_back(arg);
+void Parser::add_positional_argument(PosArgManager::value_type arg) {
+    mgr.add(arg);
 }
 
 IValueArg::OptionValue Parser::get(const std::string& arg_name) const {

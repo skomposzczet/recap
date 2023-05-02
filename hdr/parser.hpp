@@ -4,6 +4,7 @@
 #include "flag.hpp"
 #include "arg.hpp"
 #include "positional_arg.hpp"
+#include "positional_manager.hpp"
 
 #include <string>
 #include <memory>
@@ -13,7 +14,6 @@ namespace rcp {
 
 using FlagsVecType = std::vector<std::shared_ptr<Flag>>;
 using ArgsVecType = std::vector<std::shared_ptr<Arg>>;
-using PosArgsVecType = std::vector<std::shared_ptr<PositionalArg>>;
 
 class Parser
 {
@@ -22,7 +22,7 @@ public:
     void parse(int argv, const char** argc);
     void add_flag(FlagsVecType::value_type arg);
     void add_argument(ArgsVecType::value_type arg);
-    void add_positional_argument(PosArgsVecType::value_type arg);
+    void add_positional_argument(PosArgManager::value_type arg);
 
     IValueArg::OptionValue get(const std::string& arg_name) const;
     bool was_called(const std::string& arg_name) const;
@@ -47,7 +47,7 @@ private:
 
     FlagsVecType flags;
     ArgsVecType args;
-    PosArgsVecType pos_args;
+    PosArgManager mgr;
 
     std::string extract_option(const std::string& str);
     bool parse_flags(const std::string& option);

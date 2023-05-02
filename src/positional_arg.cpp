@@ -30,7 +30,7 @@ std::string PositionalArg::help() const {
     return std::format("-{}  --{}  <{}>  {}", name[0], name, util::upper(name), description);
 }
 
-order_type PositionalArg::get_order() const {
+PositionalArg::order_type PositionalArg::get_order() const {
     return order;
 }
 
