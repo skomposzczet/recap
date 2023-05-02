@@ -15,7 +15,7 @@ public:
     using value_type = container::mapped_type;
     PosArgManager() = default;
 
-    std::optional<IValueArg::OptionValue> get(const std::string& arg_name);
+    std::optional<IValueArg::OptionValue> get(const std::string& arg_name) const;
     
     void add(value_type arg);
 

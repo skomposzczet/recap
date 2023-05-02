@@ -3,7 +3,7 @@
 
 namespace rcp {
 
-std::optional<IValueArg::OptionValue> PosArgManager::get(const std::string& arg_name) {
+std::optional<IValueArg::OptionValue> PosArgManager::get(const std::string& arg_name) const {
     auto res = std::find_if(args.begin(), args.end(), [&arg_name](const auto& arg) {
         return arg.second->is_named(arg_name);
     });
