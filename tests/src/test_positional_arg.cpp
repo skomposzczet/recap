@@ -47,8 +47,10 @@ TEST(PositionalArgTest, orderSet_returnSetOrder) {
 }
 
 TEST(PositionalArgTest, orderSet_highestOrderUpdated) {
+    auto hi = PositionalArgBuilder("").get()->get_order();
+
     auto arg1 = PositionalArgBuilder(TEST_ARG_NAME)
-        .order(999)
+        .order(hi)
         .get();
     auto arg2 = PositionalArgBuilder(TEST_ARG_NAME)
         .get();

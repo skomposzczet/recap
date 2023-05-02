@@ -34,6 +34,7 @@ TEST_SOURCES := $(wildcard $(TEST_SRCDIR)/*.cpp)
 TEST_OBJECTS := $(TEST_SOURCES:$(TEST_SRCDIR)/%.cpp=$(TEST_OBJDIR)/%.o)
 
 TESTS = recap_ut.test
+TESTS_ARGS += --gtest_shuffle --gtest_repeat=1
 
 all: $(OBJDIR)/$(TARGET)
 
@@ -48,7 +49,7 @@ $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 
 
 test: $(OBJDIR)/$(TARGET) $(TEST_OBJDIR)/$(TESTS) 
-	@./$(TEST_OBJDIR)/$(TESTS)
+	@./$(TEST_OBJDIR)/$(TESTS) $(TESTS_ARGS)
 
 $(TEST_OBJDIR)/$(TESTS): $(TEST_OBJECTS) $(OBJECTS) $(TEST_OBJDIR)/gtest.a $(TEST_OBJDIR)/gtest_main.a
 	$(CXX) $(CPPTESTFLAGS) $(CXXTESTFLAGS) $^ -o $@
