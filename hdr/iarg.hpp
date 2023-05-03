@@ -1,5 +1,5 @@
-#ifndef _IARG_H_
-#define _IARG_H_
+#ifndef _RCP_IARG_H_
+#define _RCP_IARG_H_
 
 #include <string>
 #include <optional>
@@ -9,6 +9,8 @@ namespace rcp {
 class IArg
 {
 public:
+    virtual std::string get_name() const = 0;
+
     virtual bool is_named(const std::string&) const = 0;
     virtual bool is_triggered(const std::string&) const = 0;
 
@@ -28,4 +30,4 @@ public:
 
 }
 
-#endif // _IARG_H_
+#endif // _RCP_IARG_H_

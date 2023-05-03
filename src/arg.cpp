@@ -12,6 +12,10 @@ void Arg::set(const std::string& new_value) {
     value = new_value;
 }
 
+std::string Arg::get_name() const {
+    return name;
+}
+
 bool Arg::is_named(const std::string& arg_name) const {
     return arg_name == name;
 }

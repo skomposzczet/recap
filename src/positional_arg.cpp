@@ -14,6 +14,10 @@ IValueArg::OptionValue PositionalArg::get() const {
     return value;
 }
 
+std::string PositionalArg::get_name() const {
+    return name;
+}
+
 bool PositionalArg::is_named(const std::string& arg_name) const {
     return arg_name == name;
 }

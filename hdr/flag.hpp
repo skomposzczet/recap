@@ -1,5 +1,5 @@
-#ifndef _FLAG_H_
-#define _FLAG_H_
+#ifndef _RCP_FLAG_H_
+#define _RCP_FLAG_H_
 
 #include "iarg.hpp"
 
@@ -15,6 +15,8 @@ friend class FlagBuilder;
 public:
     void call();
     bool was_called() const;
+
+    std::string get_name() const override;
 
     bool is_named(const std::string& arg_name) const override;
     bool is_triggered(const std::string& option) const override;
@@ -50,4 +52,4 @@ private:
 
 }
 
-#endif // _FLAG_H_
+#endif // _RCP_FLAG_H_

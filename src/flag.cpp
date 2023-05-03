@@ -12,6 +12,10 @@ bool Flag::is_named(const std::string& arg_name) const {
     return arg_name == name;
 }
 
+std::string Flag::get_name() const {
+    return name;
+}
+
 bool Flag::is_triggered(const std::string& option) const {
     if (allow_short) {
         if (option == std::string{name[0]})

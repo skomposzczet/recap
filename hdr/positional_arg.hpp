@@ -1,5 +1,5 @@
-#ifndef _POSITIONAL_ARG_H_
-#define _POSITIONAL_ARG_H_
+#ifndef _RCP_POSITIONAL_ARG_H_
+#define _RCP_POSITIONAL_ARG_H_
 
 #include "iarg.hpp"
 #include "arg.hpp"
@@ -12,6 +12,8 @@ friend class PositionalArgBuilder;
 public:
     void set(const std::string& new_value) override;
     IValueArg::OptionValue get() const override;
+
+    std::string get_name() const override;
 
     bool is_named(const std::string& arg_name) const override;
     bool is_triggered(const std::string& option) const override;
@@ -50,4 +52,4 @@ private:
 
 }
 
-#endif // _POSITIONAL_ARG_H_
+#endif // _RCP_POSITIONAL_ARG_H_

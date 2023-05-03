@@ -1,5 +1,5 @@
-#ifndef _ARGUMENT_H_
-#define _ARGUMENT_H_
+#ifndef _RCP_ARGUMENT_H_
+#define _RCP_ARGUMENT_H_
 
 #include "iarg.hpp"
 
@@ -16,6 +16,8 @@ friend class ArgBuilder;
 public:
     void set(const std::string& new_value) override;
     IValueArg::OptionValue get() const override;
+
+    std::string get_name() const override;
 
     bool is_named(const std::string& arg_name) const override;
     bool is_triggered(const std::string& option) const override;
@@ -45,4 +47,4 @@ private:
 
 }
 
-#endif // _ARGUMENT_H_
+#endif // _RCP_ARGUMENT_H_
