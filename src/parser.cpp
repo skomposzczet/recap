@@ -1,5 +1,6 @@
 #include "parser.hpp"
 #include "rcp_error.hpp"
+#include "util.hpp"
 
 #include <vector>
 #include <algorithm>
@@ -14,25 +15,25 @@ void Parser::parse(int argc, const char** argv) {
     input = std::list<std::string>(argv+1, argv+argc);
 
     while (!input.empty()) {
-        std::string current = input.front();
-        input.pop_front();
-
-        auto option = extract_option(current);
-        if (!option.has_value()) {
-            if (parse_positional(current))
-                continue;
-            else
-                throw ParseError(std::string{"Unexpected item: "} + current + "; option should start with hyphen");
-        } else {
-            if (parse_flag(option.value()))
-                continue;
-
-            if (parse_key_arg(option.value()))
-                continue;
-        }
-
-        throw ParseError(std::string{"Failed to parse \""} + current + "\"");
+        auto res = parse_next();
+        if (res.is_err())
+            throw ParseError(res.get_err());
     }
+}
+
+ParseResult Parser::parse_next() {
+    std::string current = input.front();
+    input.pop_front();
+
+    auto option = extract_option(current);
+    if (!option.has_value())
+        return parse_positional(current);
+
+    auto res = parse_flag(option.value());
+    if (res.is_ok())
+        return res;
+
+    return parse_key_arg(option.value());
 }
 
 std::optional<std::string> Parser::extract_option(const std::string& str) {
@@ -49,40 +50,40 @@ std::optional<std::string> Parser::extract_option(const std::string& str) {
     return {};
 }
 
-bool Parser::parse_positional(const std::string& value) {
+ParseResult Parser::parse_positional(const std::string& value) {
     auto it = mgr.next();
     if (it == mgr.end())
-        return false;
+        return ResultFactory::err(util::cat("Unexpected item: ", value));
 
     (*it).second->set(value);
-    return true;
+    return ResultFactory::ok();
 }
 
-bool Parser::parse_flag(const std::string& option) {
+ParseResult Parser::parse_flag(const std::string& option) {
     auto res = std::find_if(flags.begin(), flags.end(), [&option](const auto& flag){
         return flag->is_triggered(option);
     });
 
     if (res == flags.end()) {
-        return false;
+        return ResultFactory::err(util::cat("No such flag registered: ", option));
     }
 
     (*res)->call();
-    return true;
+    return ResultFactory::ok();
 }
 
-bool Parser::parse_key_arg(const std::string& option) {
-    if (input.empty())
-        return false;
-
+ParseResult Parser::parse_key_arg(const std::string& option) {
     auto res = get_arg_by_option(option);
     if (!res.has_value())
-        return false;
+        return ResultFactory::err(util::cat("No such arg registered: ", option));
+
+    if (input.empty())
+        return ResultFactory::err(util::cat("Missing value for arg: ", option));
 
     std::string value = input.front();
     input.pop_front();
     (*res)->set(value);
-    return true;
+    return ResultFactory::ok();
 }
 
 std::optional<ArgsVecType::value_type> Parser::get_arg_by_option(const std::string& option) {

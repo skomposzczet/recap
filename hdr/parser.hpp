@@ -1,10 +1,11 @@
-#ifndef _PARSER_H_
-#define _PARSER_H_
+#ifndef _RCP_PARSER_H_
+#define _RCP_PARSER_H_
 
 #include "flag.hpp"
 #include "arg.hpp"
 #include "positional_arg.hpp"
 #include "positional_manager.hpp"
+#include "result.hpp"
 
 #include <string>
 #include <memory>
@@ -16,6 +17,8 @@ namespace rcp {
 
 using FlagsVecType = std::vector<std::shared_ptr<Flag>>;
 using ArgsVecType = std::vector<std::shared_ptr<Arg>>;
+
+using ParseResult = Result<>;
 
 class Parser
 {
@@ -53,12 +56,13 @@ private:
 
     std::list<std::string> input;
 
+    ParseResult parse_next();
+    ParseResult parse_positional(const std::string& value);
+    ParseResult parse_flag(const std::string& option);
+    ParseResult parse_key_arg(const std::string& option);
+
     std::optional<std::string> extract_option(const std::string& str);
     std::optional<ArgsVecType::value_type> get_arg_by_option(const std::string& option);
-
-    bool parse_positional(const std::string& value);
-    bool parse_flag(const std::string& option);
-    bool parse_key_arg(const std::string& option);
     
     std::string authors_help_str() const;
 };
