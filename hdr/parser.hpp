@@ -9,6 +9,8 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <optional>
+#include <list>
 
 namespace rcp {
 
@@ -49,9 +51,15 @@ private:
     ArgsVecType args;
     PosArgManager mgr;
 
-    std::string extract_option(const std::string& str);
-    bool parse_flags(const std::string& option);
-    ArgsVecType::value_type& get_arg_by_option(const std::string& option);
+    std::list<std::string> input;
+
+    std::optional<std::string> extract_option(const std::string& str);
+    std::optional<ArgsVecType::value_type> get_arg_by_option(const std::string& option);
+
+    bool parse_positional(const std::string& value);
+    bool parse_flag(const std::string& option);
+    bool parse_key_arg(const std::string& option);
+    
     std::string authors_help_str() const;
 };
 

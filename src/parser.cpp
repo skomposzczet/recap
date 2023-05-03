@@ -8,20 +8,34 @@
 namespace rcp {
 
 void Parser::parse(int argc, const char** argv) {
-    for (int i = 1 ; i < argc ; ++i) {
-        auto option = extract_option(argv[i]);
+    if (argc < 2)
+        return;
 
-        if (parse_flags(option))
-            continue;
+    input = std::list<std::string>(argv+1, argv+argc);
 
-        auto& arg = get_arg_by_option(option);
-        if (++i >= argc)
-            throw ParseError("Missing value for option: " + option);
-        arg->set(argv[i]);
+    while (!input.empty()) {
+        std::string current = input.front();
+        input.pop_front();
+
+        auto option = extract_option(current);
+        if (!option.has_value()) {
+            if (parse_positional(current))
+                continue;
+            else
+                throw ParseError(std::string{"Unexpected item: "} + current + "; option should start with hyphen");
+        } else {
+            if (parse_flag(option.value()))
+                continue;
+
+            if (parse_key_arg(option.value()))
+                continue;
+        }
+
+        throw ParseError(std::string{"Failed to parse \""} + current + "\"");
     }
 }
 
-std::string Parser::extract_option(const std::string& str) {
+std::optional<std::string> Parser::extract_option(const std::string& str) {
     std::vector<std::string> prefixes{"--", "-"};
 
     for (const auto& prefix: prefixes) {
@@ -32,10 +46,19 @@ std::string Parser::extract_option(const std::string& str) {
         }
     }
 
-    throw ParseError(std::string{"Unexpected item: "} + str + "; option should start with hyphen");
+    return {};
 }
 
-bool Parser::parse_flags(const std::string& option) {
+bool Parser::parse_positional(const std::string& value) {
+    auto it = mgr.next();
+    if (it == mgr.end())
+        return false;
+
+    (*it).second->set(value);
+    return true;
+}
+
+bool Parser::parse_flag(const std::string& option) {
     auto res = std::find_if(flags.begin(), flags.end(), [&option](const auto& flag){
         return flag->is_triggered(option);
     });
@@ -48,13 +71,27 @@ bool Parser::parse_flags(const std::string& option) {
     return true;
 }
 
-ArgsVecType::value_type& Parser::get_arg_by_option(const std::string& option) {
+bool Parser::parse_key_arg(const std::string& option) {
+    if (input.empty())
+        return false;
+
+    auto res = get_arg_by_option(option);
+    if (!res.has_value())
+        return false;
+
+    std::string value = input.front();
+    input.pop_front();
+    (*res)->set(value);
+    return true;
+}
+
+std::optional<ArgsVecType::value_type> Parser::get_arg_by_option(const std::string& option) {
     auto res = std::find_if(args.begin(), args.end(), [&option](const auto& arg){
         return arg->is_triggered(option);
     });
 
     if (res == args.end())
-        throw ParseError(std::string{"Unregistered option: "} + option);
+        return {};
 
     return *res;
 }
@@ -72,14 +109,17 @@ void Parser::add_positional_argument(PosArgManager::value_type arg) {
 }
 
 IValueArg::OptionValue Parser::get(const std::string& arg_name) const {
+    auto pos_res = mgr.get(arg_name);
+    if (pos_res.has_value())
+        return *pos_res;
+
     auto res = std::find_if(args.begin(), args.end(), [&arg_name](const auto& arg){
         return arg->is_named(arg_name);
     });
+    if (res != args.end())
+        return (*res)->get();
 
-    if (res == args.end())
-        throw ParseError(std::string{"Unregistered arg: "} + arg_name);
-
-    return (*res)->get();
+    throw ParseError(std::string{"Unregistered arg: "} + arg_name);
 }
 
 bool Parser::help_triggered() const {
