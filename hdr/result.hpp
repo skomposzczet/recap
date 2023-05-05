@@ -13,28 +13,31 @@ class Result
 {
 friend class ResultFactory;
 public:
+    using type = T;
+    using err_type = std::string;
+
     bool is_ok() const {
-        return std::holds_alternative<T>(_v);
+        return std::holds_alternative<type>(_v);
     }
     bool is_err() const {
-        return std::holds_alternative<std::string>(_v);
+        return std::holds_alternative<err_type>(_v);
     }
 
-    T get_ok() const {
+    type get_ok() const {
         if (is_err())
             throw RcpError("Tried to get result ok, when it is err.");
-        return std::get<T>(_v);
+        return std::get<type>(_v);
     }
-    const std::string& get_err() const {
+    const err_type& get_err() const {
         if (is_ok())
             throw RcpError("Tried to get result err, when it is ok.");
-        return std::get<std::string>(_v);
+        return std::get<err_type>(_v);
     }
 
 private:
     Result() = default;
 
-    std::variant<T, std::string> _v;
+    std::variant<type, err_type> _v;
 
 };
 
