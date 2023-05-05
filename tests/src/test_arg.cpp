@@ -6,6 +6,7 @@
 using namespace rcp;
 
 constexpr char TEST_ARG_NAME[]{"test_name"};
+constexpr char TEST_COND_NAME[]{"test_cond_name"};
 
 TEST(ArgTest, setDefaultValue_returnDefaultValue) {
     const std::string defval{"some_value"};
@@ -55,4 +56,24 @@ TEST(ArgTest, notAmbiguousArgs_returnsFalse) {
     auto arg1 = ArgBuilder(TEST_ARG_NAME).get();
     auto arg2 = ArgBuilder(TEST_ARG_NAME).get();
     ASSERT_TRUE(arg1->is_ambiguous(*arg2));
+}
+
+TEST(ArgTest, argWithCondition_meetsPasses) {
+    auto arg = ArgBuilder(TEST_ARG_NAME)
+        .with_condition(Condition(TEST_COND_NAME, [](const std::string&){return true;}))
+        .get();
+
+    ASSERT_TRUE(arg->set("").is_ok());
+}
+
+TEST(ArgTest, argWithConditionBunch_doenstMeetFails) {
+    ConditionBunch bunch(TEST_COND_NAME);
+    bunch.add(Condition("cond", [](const std::string&){return false;}));
+
+    auto arg = ArgBuilder(TEST_ARG_NAME)
+        .with_conditions(bunch)
+        .get();
+
+    std::string expected = std::string{TEST_ARG_NAME} + "::" + TEST_COND_NAME + "::cond";
+    ASSERT_EQ(expected, arg->set("").get_err());
 }

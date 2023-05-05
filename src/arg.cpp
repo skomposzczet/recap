@@ -8,8 +8,13 @@ IValueArg::OptionValue Arg::get() const {
     return value.has_value() ? value : default_val;
 }
 
-void Arg::set(const std::string& new_value) {
+Result<> Arg::set(const std::string& new_value) {
+    auto res = conditions->is_met(new_value);
+    if (res.is_err()) 
+        return ResultFactory::err(res.get_err());
+        
     value = new_value;
+    return ResultFactory::ok();
 }
 
 std::string Arg::get_name() const {
@@ -36,6 +41,7 @@ ArgBuilder::ArgBuilder(const std::string& name)
     : arg{std::make_unique<Arg>()} 
 {
     arg->name = name;
+    arg->conditions = std::make_unique<ConditionBunch>(arg->name);
 }
 
 std::shared_ptr<Arg> ArgBuilder::get() {
@@ -49,6 +55,16 @@ ArgBuilder& ArgBuilder::default_value(const std::string& def) {
 
 ArgBuilder& ArgBuilder::with_description(const std::string& description) {
     arg->description = description;
+    return *this;
+}
+
+ArgBuilder& ArgBuilder::with_condition(const Condition& condition) {
+    arg->conditions->add(condition);
+    return *this;
+}
+
+ArgBuilder& ArgBuilder::with_conditions(const ConditionBunch& bunch) {
+    arg->conditions->add_bunch(bunch);
     return *this;
 }
 

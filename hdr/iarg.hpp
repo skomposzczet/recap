@@ -1,6 +1,8 @@
 #ifndef _RCP_IARG_H_
 #define _RCP_IARG_H_
 
+#include "result.hpp"
+
 #include <string>
 #include <optional>
 
@@ -24,7 +26,7 @@ class IValueArg: public IArg
 public:
     using OptionValue = std::optional<std::string>;
 
-    virtual void set(const std::string& new_value) = 0;
+    virtual Result<> set(const std::string& new_value) = 0;
     virtual IValueArg::OptionValue get() const = 0;
 };
 

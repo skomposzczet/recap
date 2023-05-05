@@ -6,8 +6,13 @@ namespace rcp {
 
 PositionalArg::order_type PositionalArg::highest_order{0};
 
-void PositionalArg::set(const std::string& new_value) {
+Result<> PositionalArg::set(const std::string& new_value) {
+    auto res = conditions->is_met(new_value);
+    if (res.is_err()) 
+        return ResultFactory::err(res.get_err());
+        
     value = new_value;
+    return ResultFactory::ok();
 }
 
 IValueArg::OptionValue PositionalArg::get() const {
@@ -46,6 +51,7 @@ PositionalArgBuilder::PositionalArgBuilder(const std::string& name)
     : arg{std::make_shared<PositionalArg>()} 
 {
     arg->name = name;
+    arg->conditions = std::make_unique<ConditionBunch>(arg->name);
 }
 
 std::shared_ptr<PositionalArg> PositionalArgBuilder::get() {
@@ -66,6 +72,16 @@ PositionalArgBuilder& PositionalArgBuilder::order(PositionalArg::order_type orde
 
 PositionalArgBuilder& PositionalArgBuilder::with_description(const std::string& description) {
     arg->description = description;
+    return *this;
+}
+
+PositionalArgBuilder& PositionalArgBuilder::with_condition(const Condition& condition) {
+    arg->conditions->add(condition);
+    return *this;
+}
+
+PositionalArgBuilder& PositionalArgBuilder::with_conditions(const ConditionBunch& bunch) {
+    arg->conditions->add_bunch(bunch);
     return *this;
 }
 

@@ -2,6 +2,7 @@
 #define _RCP_ARGUMENT_H_
 
 #include "iarg.hpp"
+#include "condition.hpp"
 
 #include <string>
 #include <vector>
@@ -14,7 +15,7 @@ class Arg: public IValueArg
 {
 friend class ArgBuilder;
 public:
-    void set(const std::string& new_value) override;
+    Result<> set(const std::string& new_value) override;
     IValueArg::OptionValue get() const override;
 
     std::string get_name() const override;
@@ -25,11 +26,13 @@ public:
 
     std::string help() const override;
 
-protected:
+private:
     IValueArg::OptionValue value;
     IValueArg::OptionValue default_val;
     std::string name;
     std::string description;
+
+    std::unique_ptr<ConditionBunch> conditions;
 };
 
 class ArgBuilder
@@ -40,6 +43,8 @@ public:
 
     ArgBuilder& default_value(const std::string& def);
     ArgBuilder& with_description(const std::string& description);
+    ArgBuilder& with_condition(const Condition& condition);
+    ArgBuilder& with_conditions(const ConditionBunch& bunch);
 
 private:
     std::shared_ptr<Arg> arg;
