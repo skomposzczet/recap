@@ -3,6 +3,16 @@
 
 namespace rcp {
 
+PosArgManager::PosArgManager() {
+    it = args.begin();
+}
+
+PosArgManager::PosArgManager(const PosArgManager& other) 
+    : args{other.args}
+{
+    it = args.begin();
+}
+
 std::optional<IValueArg::OptionValue> PosArgManager::get(const std::string& arg_name) const {
     auto res = std::find_if(args.begin(), args.end(), [&arg_name](const auto& arg) {
         return arg.second->is_named(arg_name);
@@ -20,6 +30,8 @@ void PosArgManager::add(value_type arg) {
 }
 
 PosArgManager::container::iterator PosArgManager::next() {
+    if (it == args.end())
+        return it;
     return it++;
 }
 

@@ -78,3 +78,10 @@ TEST(PosMgrTest, noArg_getReturnsNull) {
     PosArgManager mgr;
     ASSERT_FALSE(mgr.get(TEST_ARG_NAME).has_value());
 }
+
+TEST(PosMgrTest, copyCtor_itPointsToNewMap) {
+    PosArgManager mgr1;
+    PosArgManager mgr2 = mgr1;
+    
+    ASSERT_NE(mgr1.next(), mgr2.next());
+}

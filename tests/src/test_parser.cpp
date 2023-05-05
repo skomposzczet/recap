@@ -223,5 +223,14 @@ TEST(ParserTest, addArgWithCondition_conditionNotMetThrows) {
     const std::string val{"value"};
     const char* args[] = {TEST_APP_NAME, "-t", val.data()};
 
-    ASSERT_ANY_THROW(parser.parse(LOCAL_SIZE(), args));
+    ASSERT_THROW(parser.parse(LOCAL_SIZE(), args), ParseError);
+}
+
+TEST(ParserTest, addArg_valueWithoudOptionNameThrows) {
+    Parser parser = ParserBuilder(TEST_APP_NAME).get();
+    parser.add_argument(ArgBuilder(TEST_ARG_NAME).get());
+
+    const char* args[] = {TEST_APP_NAME, "test"};
+
+    ASSERT_THROW(parser.parse(LOCAL_SIZE(), args), ParseError);
 }
