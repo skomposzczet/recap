@@ -15,6 +15,7 @@ using namespace rcp;
 
 constexpr char TEST_APP_NAME[]{"test_app_name"};
 constexpr char TEST_ARG_NAME[]{"test arg name"};
+constexpr char TEST_COND_NAME[]{"test_cond_name"};
 
 std::vector<std::string> shuffle_args(std::vector<std::vector<std::string>>& rcargs, const std::string& name) {
     std::random_device rd;
@@ -192,4 +193,35 @@ TEST(ParserTest, addAmbiguousFlagPosArg_throwsOnAdd) {
         .get();
 
     ASSERT_THROW(parser.add_positional_argument(PositionalArgBuilder("help").get()), ParseError);
+}
+
+TEST(ParserTest, addArgWithCondition_conditionMetParses) {
+    Parser parser = ParserBuilder(TEST_APP_NAME)
+        .get();
+    parser.add_argument(
+        ArgBuilder(TEST_ARG_NAME)
+            .with_condition(Condition(TEST_COND_NAME, [](const std::string&){return true;}))
+            .get()
+    );
+
+    const std::string val{"value"};
+    const char* args[] = {TEST_APP_NAME, "-t", val.data()};
+
+    parser.parse(LOCAL_SIZE(), args);
+    ASSERT_EQ(val, parser.get(TEST_ARG_NAME));
+}
+
+TEST(ParserTest, addArgWithCondition_conditionNotMetThrows) {
+    Parser parser = ParserBuilder(TEST_APP_NAME)
+        .get();
+    parser.add_argument(
+        ArgBuilder(TEST_ARG_NAME)
+            .with_condition(Condition(TEST_COND_NAME, [](const std::string&){return false;}))
+            .get()
+    );
+
+    const std::string val{"value"};
+    const char* args[] = {TEST_APP_NAME, "-t", val.data()};
+
+    ASSERT_ANY_THROW(parser.parse(LOCAL_SIZE(), args));
 }

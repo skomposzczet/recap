@@ -55,8 +55,7 @@ ParseResult Parser::parse_positional(const std::string& value) {
     if (it == mgr.end())
         return ResultFactory::err(util::cat("Unexpected item: ", value));
 
-    (*it).second->set(value);
-    return ResultFactory::ok();
+    return (*it).second->set(value);
 }
 
 ParseResult Parser::parse_flag(const std::string& option) {
@@ -82,8 +81,8 @@ ParseResult Parser::parse_key_arg(const std::string& option) {
 
     std::string value = input.front();
     input.pop_front();
-    (*res)->set(value);
-    return ResultFactory::ok();
+
+    return (*res)->set(value);
 }
 
 std::optional<ArgsVecType::value_type> Parser::get_arg_by_option(const std::string& option) {
