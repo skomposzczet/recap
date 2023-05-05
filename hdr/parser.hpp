@@ -25,6 +25,7 @@ class Parser
 friend class ParserBuilder;
 public:
     void parse(int argv, const char** argc);
+
     void add_flag(FlagsVecType::value_type arg);
     void add_argument(ArgsVecType::value_type arg);
     void add_positional_argument(PosArgManager::value_type arg);
@@ -56,6 +57,8 @@ private:
 
     std::list<std::string> input;
 
+    ParseResult check_ambiguity(const IArg& arg) const;
+
     ParseResult parse_next();
     ParseResult parse_positional(const std::string& value);
     ParseResult parse_flag(const std::string& option);
@@ -69,4 +72,4 @@ private:
 
 }
 
-#endif // _PARSER_H_
+#endif // _RCP_PARSER_H_

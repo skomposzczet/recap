@@ -98,15 +98,45 @@ std::optional<ArgsVecType::value_type> Parser::get_arg_by_option(const std::stri
 }
 
 void Parser::add_flag(FlagsVecType::value_type flag) {
+    auto res = check_ambiguity(*flag);
+    if (res.is_err())
+        throw ParseError(res.get_err());
+
     flags.push_back(flag);
 }
 
 void Parser::add_argument(ArgsVecType::value_type arg) {
+    auto res = check_ambiguity(*arg);
+    if (res.is_err())
+        throw ParseError(res.get_err());
+
     args.push_back(arg);
 }
 
 void Parser::add_positional_argument(PosArgManager::value_type arg) {
+    auto res = check_ambiguity(*arg);
+    if (res.is_err())
+        throw ParseError(res.get_err());
+
     mgr.add(arg);
+}
+
+ParseResult Parser::check_ambiguity(const IArg& arg) const {
+    const std::string& err_str = util::cat("Ambiguity :", arg.get_name(), " but ");
+
+    for (const auto& earg: flags) {
+        if (arg.is_ambiguous(*earg))
+            return ResultFactory::err(util::cat(err_str, "flag \"", earg->get_name(), "\" already exists"));
+    }
+    for (const auto& earg: args) {
+        if (arg.is_ambiguous(*earg))
+            return ResultFactory::err(util::cat(err_str, "arg \"", earg->get_name(), "\" already exists"));
+    }
+    auto res = mgr.get(arg.get_name());
+    if (res.has_value())
+            return ResultFactory::err(util::cat(err_str, "positional arg \"", arg.get_name(), "\" already exists"));
+
+    return ResultFactory::ok();
 }
 
 IValueArg::OptionValue Parser::get(const std::string& arg_name) const {

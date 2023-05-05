@@ -178,3 +178,18 @@ TEST(ParserTest, addMultipleTypeArgs_parsesAllInRandomOrder) {
         ASSERT_EQ(val, parser.was_called(key)) << dbg_str;
     }
 }
+
+TEST(ParserTest, addAmbiguousArg_throwsOnAdd) {
+    Parser parser = ParserBuilder(TEST_APP_NAME).get();
+
+    parser.add_positional_argument(PositionalArgBuilder(TEST_ARG_NAME).get());
+    ASSERT_THROW(parser.add_flag(FlagBuilder(TEST_ARG_NAME).get()), ParseError);
+}
+
+TEST(ParserTest, addAmbiguousFlagPosArg_throwsOnAdd) {
+    Parser parser = ParserBuilder(TEST_APP_NAME)
+        .help_enabled()
+        .get();
+
+    ASSERT_THROW(parser.add_positional_argument(PositionalArgBuilder("help").get()), ParseError);
+}
