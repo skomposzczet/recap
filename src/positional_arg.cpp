@@ -43,6 +43,10 @@ PositionalArg::order_type PositionalArg::get_order() const {
     return order;
 }
 
+bool PositionalArg::is_required() const {
+    return required;
+}
+
 void PositionalArg::update_highest_order(order_type order) {
     highest_order = ( highest_order > order ? highest_order : order + 1 );
 }
@@ -82,6 +86,11 @@ PositionalArgBuilder& PositionalArgBuilder::with_condition(const Condition& cond
 
 PositionalArgBuilder& PositionalArgBuilder::with_conditions(const ConditionBunch& bunch) {
     arg->conditions->add_bunch(bunch);
+    return *this;
+}
+
+PositionalArgBuilder& PositionalArgBuilder::required() {
+    arg->required = true;
     return *this;
 }
 

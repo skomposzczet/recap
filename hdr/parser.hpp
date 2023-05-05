@@ -58,6 +58,7 @@ private:
     std::list<std::string> input;
 
     ParseResult check_ambiguity(const IArg& arg) const;
+    ParseResult check_valid_parsing() const;
 
     ParseResult parse_next();
     ParseResult parse_positional(const std::string& value);

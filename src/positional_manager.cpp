@@ -1,4 +1,5 @@
 #include "positional_manager.hpp"
+#include "util.hpp"
 #include <algorithm>
 
 namespace rcp {
@@ -37,6 +38,15 @@ PosArgManager::container::iterator PosArgManager::next() {
 
 PosArgManager::container::iterator PosArgManager::end() {
     return args.end();
+}
+
+Result<> PosArgManager::check_required_satisfied() const {
+    for(const auto& [order, arg]: args) {
+        if (arg->is_required() && !arg->get().has_value())
+            return ResultFactory::err(util::cat("Requires value but not set: ", arg->get_name()));
+    }
+
+    return ResultFactory::ok();
 }
 
 }

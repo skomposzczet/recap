@@ -96,3 +96,16 @@ TEST(PositionalArgTest, argWithConditionBunch_doenstMeetFails) {
     std::string expected = std::string{TEST_ARG_NAME} + "::" + TEST_COND_NAME + "::cond";
     ASSERT_EQ(expected, arg->set("").get_err());
 }
+
+TEST(PositionalArgTest, defaultArg_notRequired) {
+    auto arg = PositionalArgBuilder(TEST_ARG_NAME)
+        .get();
+    ASSERT_FALSE(arg->is_required());
+}
+
+TEST(PositionalArgTest, argRequired_isRequired) {
+    auto arg = PositionalArgBuilder(TEST_ARG_NAME)
+        .required()
+        .get();
+    ASSERT_TRUE(arg->is_required());
+}

@@ -1,7 +1,8 @@
-#ifndef _POSITIONAL_ARG_MANAGER_H_
-#define _POSITIONAL_ARG_MANAGER_H_
+#ifndef _RCP_POSITIONAL_ARG_MANAGER_H_
+#define _RCP_POSITIONAL_ARG_MANAGER_H_
 
 #include "positional_arg.hpp"
+#include "result.hpp"
 #include <map>
 #include <memory>
 #include <optional>
@@ -20,6 +21,8 @@ public:
     
     void add(value_type arg);
 
+    Result<> check_required_satisfied() const;
+
     container::iterator next();
     container::iterator end();
 
@@ -30,4 +33,4 @@ private:
 
 }
 
-#endif // _POSITIONAL_ARG_MANAGER_H_
+#endif // _RCP_POSITIONAL_ARG_MANAGER_H_

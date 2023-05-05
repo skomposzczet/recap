@@ -234,3 +234,21 @@ TEST(ParserTest, addArg_valueWithoudOptionNameThrows) {
 
     ASSERT_THROW(parser.parse(LOCAL_SIZE(), args), ParseError);
 }
+
+TEST(ParserTest, noRequiredArgs_parseIsValid) {
+    Parser parser = ParserBuilder(TEST_APP_NAME).get();
+    parser.add_positional_argument(PositionalArgBuilder(TEST_ARG_NAME).get());
+
+    const char* args[] = {TEST_APP_NAME};
+
+    ASSERT_NO_THROW(parser.parse(LOCAL_SIZE(), args));
+}
+
+TEST(ParserTest, requiredArgs_parseNotValidThrows) {
+    Parser parser = ParserBuilder(TEST_APP_NAME).get();
+    parser.add_positional_argument(PositionalArgBuilder(TEST_ARG_NAME).required().get());
+
+    const char* args[] = {TEST_APP_NAME};
+
+    ASSERT_THROW(parser.parse(LOCAL_SIZE(), args), ParseError);
+}

@@ -23,6 +23,7 @@ public:
 
     using order_type = unsigned;
     order_type get_order() const;
+    bool is_required() const;
 
 private:
     OptionValue value;
@@ -30,6 +31,7 @@ private:
     std::string description;
 
     order_type order;
+    bool required = false;
 
     std::unique_ptr<ConditionBunch> conditions;
 
@@ -47,6 +49,7 @@ public:
     PositionalArgBuilder& with_description(const std::string& description);
     PositionalArgBuilder& with_condition(const Condition& condition);
     PositionalArgBuilder& with_conditions(const ConditionBunch& bunch);
+    PositionalArgBuilder& required();
 
 private:
     std::shared_ptr<PositionalArg> arg;

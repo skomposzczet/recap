@@ -9,16 +9,19 @@
 namespace rcp {
 
 void Parser::parse(int argc, const char** argv) {
-    if (argc < 2)
-        return;
+    if (argc >= 2) {
+        input = std::list<std::string>(argv+1, argv+argc);
 
-    input = std::list<std::string>(argv+1, argv+argc);
-
-    while (!input.empty()) {
-        auto res = parse_next();
-        if (res.is_err())
-            throw ParseError(res.get_err());
+        while (!input.empty()) {
+            auto res = parse_next();
+            if (res.is_err())
+                throw ParseError(res.get_err());
+        }
     }
+
+    auto res = check_valid_parsing();
+    if (res.is_err())
+        throw ParseError(res.get_err());
 }
 
 ParseResult Parser::parse_next() {
@@ -94,6 +97,10 @@ std::optional<ArgsVecType::value_type> Parser::get_arg_by_option(const std::stri
         return {};
 
     return *res;
+}
+
+ParseResult Parser::check_valid_parsing() const {
+    return mgr.check_required_satisfied();
 }
 
 void Parser::add_flag(FlagsVecType::value_type flag) {
