@@ -55,15 +55,6 @@ TEST(FlagTest, forbidShortBuild_throwsOnBuild) {
     ASSERT_THROW(bldr.get(), BuildError);
 }
 
-TEST(FlagTest, descriptionSet_descriptionContainedInHelpString) {
-    const std::string desc{"test description"};
-    auto flag = FlagBuilder(TEST_FLAG_NAME)
-        .with_description(desc)
-        .get();
-
-    ASSERT_TRUE(flag->help().find(desc) != std::string::npos);
-}
-
 TEST(FlagTest, ambiguousFlags_returnsTrue) {
     auto flag1 = FlagBuilder(TEST_FLAG_NAME).get();
     auto flag2 = FlagBuilder(TEST_FLAG_NAME).get();

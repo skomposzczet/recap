@@ -1,6 +1,5 @@
 #include "positional_arg.hpp"
 #include "util.hpp"
-#include <format>
 
 namespace rcp {
 
@@ -35,8 +34,13 @@ bool PositionalArg::is_ambiguous(const IArg& other) const {
     return other.is_triggered(name) || other.is_triggered(std::string{name[0]});
 }
 
-std::string PositionalArg::help() const {
-    return std::format("-{}  --{}  <{}>  {}", name[0], name, util::upper(name), description);
+ArgInfoVec PositionalArg::get_arg_info() const {
+    ArgInfo info(Type::positional);
+    info.order = order;
+    info.required = required;
+    info.description = description;
+
+    return {info};
 }
 
 PositionalArg::order_type PositionalArg::get_order() const {

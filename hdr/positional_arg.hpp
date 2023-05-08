@@ -19,7 +19,7 @@ public:
     bool is_triggered(const std::string& option) const override;
     bool is_ambiguous(const IArg& other) const override;
 
-    std::string help() const override;
+    ArgInfoVec get_arg_info() const override;
 
     using order_type = unsigned;
     order_type get_order() const;

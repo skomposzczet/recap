@@ -33,13 +33,6 @@ TEST(ArgTest, defaultValValueSet_returnsNewValue) {
     ASSERT_EQ(expected, arg->get().value());
 }
 
-TEST(ArgTest, descriptionSet_returnsHelpWithDescription) {
-    const std::string test_desc{"test description"};
-    auto arg = ArgBuilder(TEST_ARG_NAME).with_description(test_desc).get();
-    const std::string expected = std::format("-{}  --{}  <{}>  {}", TEST_ARG_NAME[0], TEST_ARG_NAME, util::upper(TEST_ARG_NAME), test_desc);
-    ASSERT_EQ(expected, arg->help());
-}
-
 TEST(ArgTest, isTriggered_triggeredByShortAndLongVersion) {
     auto arg = ArgBuilder(TEST_ARG_NAME).get();
     ASSERT_TRUE(arg->is_triggered(TEST_ARG_NAME));

@@ -1,6 +1,5 @@
 #include "arg.hpp"
 #include "util.hpp"
-#include <format>
 
 namespace rcp {
 
@@ -33,8 +32,14 @@ bool Arg::is_ambiguous(const IArg& other) const {
     return other.is_triggered(name) + other.is_triggered(std::string{name[0]});
 }
 
-std::string Arg::help() const {
-    return std::format("-{}  --{}  <{}>  {}", name[0], name, util::upper(name), description);
+ArgInfoVec Arg::get_arg_info() const {
+    ArgInfo info(Type::other);
+    info.short_version = std::string{name[0]};
+    info.long_version = name;
+    info.description = description;
+    info.value = name;
+    
+    return {info};
 }
 
 ArgBuilder::ArgBuilder(const std::string& name) 

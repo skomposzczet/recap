@@ -22,7 +22,7 @@ public:
     bool is_triggered(const std::string& option) const override;
     bool is_ambiguous(const IArg& other) const override;
 
-    std::string help() const override;
+    ArgInfoVec get_arg_info() const override;
 
 private:
     std::string name;
