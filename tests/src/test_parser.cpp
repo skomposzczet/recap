@@ -80,7 +80,7 @@ TEST(ParserTest, addAuthors_returnsAuthors) {
         .authors({as.at(2), as.at(3)})
         .get();
     
-    ASSERT_EQ(as, parser.get_authors());
+    ASSERT_EQ(as, parser.get_app_info().authors);
 }
 
 TEST(ParserTest, addFlag_parsesFlag) {

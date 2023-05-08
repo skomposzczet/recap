@@ -179,8 +179,8 @@ bool Parser::was_called(const std::string& arg_name) const {
 }
 
 std::string Parser::help() const { 
-    std::string help_text = std::string{"\t"} + name + " - " + brief
-        + "\n\n\t" + description + "\n\n";
+    std::string help_text = std::string{"\t"} + app_info.name + " - " + app_info.description.brief
+        + "\n\n\t" + app_info.description.full + "\n\n";
 
     const std::string arg_pre{"\t\t"};
     for (auto& arg: args) {
@@ -196,25 +196,25 @@ std::string Parser::help() const {
 }
 
 std::string Parser::authors_help_str() const {
-    if (authors.empty())
+    if (app_info.authors.empty())
         return std::string{""};
 
     std::string begin{"\n\n\t"};
-    if (authors.size() == 1u) 
-        return begin + "author: " + authors.at(0) + "\n";
+    if (app_info.authors.size() == 1u) 
+        return begin + "author: " + app_info.authors.at(0) + "\n";
     
     begin += "authors: ";
-    for (const std::string& author: authors)
+    for (const std::string& author: app_info.authors)
         begin += author + ", ";
     return begin + "\b\b \n";
 }
 
 std::string Parser::version() const {
-    return name + "(" + _version + ")";
+    return app_info.name + "(" + app_info.version + ")";
 }
 
-const std::vector<std::string>& Parser::get_authors() const {
-    return authors;
+const AppInfo& Parser::get_app_info() const {
+    return app_info;
 }
 
 }

@@ -6,6 +6,7 @@
 #include "positional_arg.hpp"
 #include "positional_manager.hpp"
 #include "result.hpp"
+#include "doc_maker.hpp"
 
 #include <string>
 #include <memory>
@@ -39,17 +40,12 @@ public:
     std::string help() const;
     std::string version() const;
 
-    const std::vector<std::string>& get_authors() const;
+    const AppInfo& get_app_info() const;
 
 private:
     Parser() = default;
 
-    std::string name;
-    std::string description;
-    std::string brief;
-    std::string epilog;
-    std::string _version;
-    std::vector<std::string> authors;
+    AppInfo app_info;
 
     FlagsVecType flags;
     ArgsVecType args;
