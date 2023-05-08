@@ -18,4 +18,20 @@ struct AppInfo {
     } description;
 };
 
+enum class Type {
+    positional,
+    other,
+};
+
+struct ArgInfo {
+    ArgInfo(Type type) : type{type} {}
+    Type type;
+    unsigned order = -1;
+    bool required = false;
+    OptStr short_version;
+    OptStr long_version;
+    OptStr value;
+    std::string description;
+};
+
 #endif // _RCP_DOC_MAKER_H_
