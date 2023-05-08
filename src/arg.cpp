@@ -30,7 +30,11 @@ bool Arg::is_triggered(const std::string& option) const {
 }
 
 bool Arg::is_ambiguous(const IArg& other) const {
-    return other.is_triggered(name) + other.is_triggered(std::string{name[0]});
+    bool res = false;
+    res += other.is_named(name);
+    res += other.is_triggered(name);
+    res += other.is_triggered(std::string{name[0]});
+    return res; 
 }
 
 std::string Arg::help() const {

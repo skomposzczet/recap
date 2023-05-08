@@ -30,6 +30,7 @@ bool Flag::is_triggered(const std::string& option) const {
 
 bool Flag::is_ambiguous(const IArg& other) const {
     int res = false;
+    res += other.is_named(name);
     if (allow_short) {
         res += other.is_triggered(std::string{name[0]});
     }

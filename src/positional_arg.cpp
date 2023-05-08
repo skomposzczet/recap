@@ -27,12 +27,12 @@ bool PositionalArg::is_named(const std::string& arg_name) const {
     return arg_name == name;
 }
 
-bool PositionalArg::is_triggered(const std::string& option) const {
-    return is_named(option) || (option.size() == 1u && option[0] == name[0]);
+bool PositionalArg::is_triggered(const std::string&) const {
+    return false;
 }
 
 bool PositionalArg::is_ambiguous(const IArg& other) const {
-    return other.is_triggered(name) || other.is_triggered(std::string{name[0]});
+    return other.is_named(name);
 }
 
 std::string PositionalArg::help() const {

@@ -59,10 +59,10 @@ TEST(PositionalArgTest, orderSet_highestOrderUpdated) {
     ASSERT_EQ(arg1->get_order() + 1, arg2->get_order());
 }
 
-TEST(PositionalArgTest, isTriggered_triggeredByShortAndLongVersion) {
+TEST(PositionalArgTest, isTriggered_alwaysFalse) {
     auto arg = PositionalArgBuilder(TEST_ARG_NAME).get();
-    ASSERT_TRUE(arg->is_triggered(TEST_ARG_NAME));
-    ASSERT_TRUE(arg->is_triggered(std::string{TEST_ARG_NAME[0]}));
+    ASSERT_FALSE(arg->is_triggered(TEST_ARG_NAME));
+    ASSERT_FALSE(arg->is_triggered(std::string{TEST_ARG_NAME[0]}));
 }
 
 TEST(PositionalArgTest, ambiguousArgs_returnsTrue) {
