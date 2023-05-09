@@ -70,3 +70,12 @@ TEST(ArgTest, argWithConditionBunch_doenstMeetFails) {
     std::string expected = std::string{TEST_ARG_NAME} + "::" + TEST_COND_NAME + "::cond";
     ASSERT_EQ(expected, arg->set("").get_err());
 }
+
+TEST(ArgTest, createArg_returnsCorrectArgInfo) {
+    auto arg = ArgBuilder(TEST_ARG_NAME)
+        .get();
+
+    auto info = arg->get_arg_info().front();
+    ASSERT_EQ(Type::other, info.type);
+    ASSERT_EQ(TEST_ARG_NAME, info.value);
+}

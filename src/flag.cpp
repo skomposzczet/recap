@@ -49,6 +49,7 @@ ArgInfoVec Flag::get_arg_info() const {
     if (allow_long)
         info.long_version = name;
     info.description = description;
+    info.value = name;
     
     return {info};
 }

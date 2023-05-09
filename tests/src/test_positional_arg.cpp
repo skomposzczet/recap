@@ -98,3 +98,28 @@ TEST(PositionalArgTest, argRequired_isRequired) {
         .get();
     ASSERT_TRUE(arg->is_required());
 }
+
+TEST(PositionalArgTest, defaultPosArg_argInfoReqIsFalse) {
+    auto arg = PositionalArgBuilder(TEST_ARG_NAME)
+        .get();
+
+    auto info = arg->get_arg_info().front();
+
+    ASSERT_EQ(Type::positional, info.type);
+    ASSERT_EQ(TEST_ARG_NAME, info.value);
+    ASSERT_EQ(arg->get_order(), info.order);
+    ASSERT_FALSE(info.required);
+}
+
+TEST(PositionalArgTest, defaultPosArg_argInfoReqIsTrue) {
+    auto arg = PositionalArgBuilder(TEST_ARG_NAME)
+        .required()
+        .get();
+
+    auto info = arg->get_arg_info().front();
+
+    ASSERT_EQ(Type::positional, info.type);
+    ASSERT_EQ(TEST_ARG_NAME, info.value);
+    ASSERT_EQ(arg->get_order(), info.order);
+    ASSERT_TRUE(info.required);
+}

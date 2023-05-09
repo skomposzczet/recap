@@ -39,6 +39,7 @@ ArgInfoVec PositionalArg::get_arg_info() const {
     info.order = order;
     info.required = required;
     info.description = description;
+    info.value = name;
 
     return {info};
 }
