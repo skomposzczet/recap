@@ -23,6 +23,8 @@ public:
 
     Result<> check_required_satisfied() const;
 
+    ArgInfoVec get_arg_info() const;
+
     container::iterator next();
     container::iterator end();
 

@@ -37,10 +37,10 @@ public:
     bool help_triggered() const;
     bool version_triggered() const;
 
-    std::string help() const;
     std::string version() const;
 
-    const AppInfo& get_app_info() const;
+    AppInfo get_app_info() const;
+    ArgInfoVec get_arg_info() const;
 
 private:
     Parser() = default;
@@ -63,8 +63,6 @@ private:
 
     std::optional<std::string> extract_option(const std::string& str);
     std::optional<ArgsVecType::value_type> get_arg_by_option(const std::string& option);
-    
-    std::string authors_help_str() const;
 };
 
 }

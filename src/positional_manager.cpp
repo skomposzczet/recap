@@ -30,6 +30,13 @@ void PosArgManager::add(value_type arg) {
     it = args.begin();
 }
 
+ArgInfoVec PosArgManager::get_arg_info() const {
+    ArgInfoVec vec;
+    for (const auto& [order, arg]: args)
+        vec.push_back(arg->get_arg_info().front());
+    return vec;
+}
+
 PosArgManager::container::iterator PosArgManager::next() {
     if (it == args.end())
         return it;
