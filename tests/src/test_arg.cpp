@@ -79,3 +79,44 @@ TEST(ArgTest, createArg_returnsCorrectArgInfo) {
     ASSERT_EQ(Type::other, info.type);
     ASSERT_EQ(TEST_ARG_NAME, info.value);
 }
+
+TEST(ArgTest, createArgWithAliases_argInfoContainsDataAboutAliases) {
+    std::string alias{"first_alias"};
+    std::vector<std::string> aliases{"alias", "other_alias"};
+
+    auto arg = ArgBuilder(TEST_ARG_NAME)
+        .with_aliases(aliases)
+        .with_alias(alias)
+        .get();
+
+    aliases.push_back(alias);
+
+    auto info_vec = arg->get_arg_info();
+
+    ASSERT_EQ(aliases.size()+1, info_vec.size());
+    info_vec.erase(info_vec.begin());
+    for (size_t i{0} ; i < info_vec.size() ; ++i) {
+        ASSERT_EQ(Type::other, info_vec.at(i).type);
+        ASSERT_EQ(TEST_ARG_NAME, info_vec.at(i).value);
+        ASSERT_EQ(aliases.at(i), info_vec.at(i).long_version);
+    }
+}
+
+TEST(ArgTest, createArgWithAlias_isTriggeredByAlias) {
+    std::string alias{"alias"};
+    auto arg = ArgBuilder(TEST_ARG_NAME)
+        .with_alias(alias)
+        .get();
+
+    ASSERT_TRUE(arg->is_triggered(alias));
+}
+
+TEST(ArgTest, createArgWithAliases_isTriggeredByAliases) {
+    std::vector<std::string> aliases{"alias", "other_alias"};
+    auto arg = ArgBuilder(TEST_ARG_NAME)
+        .with_aliases(aliases)
+        .get();
+
+    ASSERT_TRUE(arg->is_triggered(aliases.at(0)));
+    ASSERT_TRUE(arg->is_triggered(aliases.at(1)));
+}
