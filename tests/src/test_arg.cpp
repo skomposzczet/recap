@@ -33,13 +33,6 @@ TEST(ArgTest, defaultValValueSet_returnsNewValue) {
     ASSERT_EQ(expected, arg->get().value());
 }
 
-TEST(ArgTest, descriptionSet_returnsHelpWithDescription) {
-    const std::string test_desc{"test description"};
-    auto arg = ArgBuilder(TEST_ARG_NAME).with_description(test_desc).get();
-    const std::string expected = std::format("-{}  --{}  <{}>  {}", TEST_ARG_NAME[0], TEST_ARG_NAME, util::upper(TEST_ARG_NAME), test_desc);
-    ASSERT_EQ(expected, arg->help());
-}
-
 TEST(ArgTest, isTriggered_triggeredByShortAndLongVersion) {
     auto arg = ArgBuilder(TEST_ARG_NAME).get();
     ASSERT_TRUE(arg->is_triggered(TEST_ARG_NAME));
@@ -76,4 +69,54 @@ TEST(ArgTest, argWithConditionBunch_doenstMeetFails) {
 
     std::string expected = std::string{TEST_ARG_NAME} + "::" + TEST_COND_NAME + "::cond";
     ASSERT_EQ(expected, arg->set("").get_err());
+}
+
+TEST(ArgTest, createArg_returnsCorrectArgInfo) {
+    auto arg = ArgBuilder(TEST_ARG_NAME)
+        .get();
+
+    auto info = arg->get_arg_info().front();
+    ASSERT_EQ(Type::other, info.type);
+    ASSERT_EQ(TEST_ARG_NAME, info.value);
+}
+
+TEST(ArgTest, createArgWithAliases_argInfoContainsDataAboutAliases) {
+    std::string alias{"first_alias"};
+    std::vector<std::string> aliases{"alias", "other_alias"};
+
+    auto arg = ArgBuilder(TEST_ARG_NAME)
+        .with_aliases(aliases)
+        .with_alias(alias)
+        .get();
+
+    aliases.push_back(alias);
+
+    auto info_vec = arg->get_arg_info();
+
+    ASSERT_EQ(aliases.size()+1, info_vec.size());
+    info_vec.erase(info_vec.begin());
+    for (size_t i{0} ; i < info_vec.size() ; ++i) {
+        ASSERT_EQ(Type::other, info_vec.at(i).type);
+        ASSERT_EQ(TEST_ARG_NAME, info_vec.at(i).value);
+        ASSERT_EQ(aliases.at(i), info_vec.at(i).long_version);
+    }
+}
+
+TEST(ArgTest, createArgWithAlias_isTriggeredByAlias) {
+    std::string alias{"alias"};
+    auto arg = ArgBuilder(TEST_ARG_NAME)
+        .with_alias(alias)
+        .get();
+
+    ASSERT_TRUE(arg->is_triggered(alias));
+}
+
+TEST(ArgTest, createArgWithAliases_isTriggeredByAliases) {
+    std::vector<std::string> aliases{"alias", "other_alias"};
+    auto arg = ArgBuilder(TEST_ARG_NAME)
+        .with_aliases(aliases)
+        .get();
+
+    ASSERT_TRUE(arg->is_triggered(aliases.at(0)));
+    ASSERT_TRUE(arg->is_triggered(aliases.at(1)));
 }

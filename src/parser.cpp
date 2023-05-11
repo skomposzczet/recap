@@ -178,43 +178,31 @@ bool Parser::was_called(const std::string& arg_name) const {
     return (*res)->was_called();
 }
 
-std::string Parser::help() const { 
-    std::string help_text = std::string{"\t"} + name + " - " + brief
-        + "\n\n\t" + description + "\n\n";
-
-    const std::string arg_pre{"\t\t"};
-    for (auto& arg: args) {
-        help_text += arg_pre + arg->help() + "\n";
-    }
-    for (auto& flag: flags) {
-        help_text += arg_pre + flag->help() + "\n";
-    }
-
-    help_text += authors_help_str();
-
-    return help_text;
-}
-
-std::string Parser::authors_help_str() const {
-    if (authors.empty())
-        return std::string{""};
-
-    std::string begin{"\n\n\t"};
-    if (authors.size() == 1u) 
-        return begin + "author: " + authors.at(0) + "\n";
-    
-    begin += "authors: ";
-    for (const std::string& author: authors)
-        begin += author + ", ";
-    return begin + "\b\b \n";
-}
-
 std::string Parser::version() const {
-    return name + "(" + _version + ")";
+    return app_info.name + "(" + app_info.version + ")";
 }
 
-const std::vector<std::string>& Parser::get_authors() const {
-    return authors;
+AppInfo Parser::get_app_info() const {
+    return app_info;
+}
+
+ArgInfoVec Parser::get_arg_info() const {
+    ArgInfoVec vec;
+
+    for(const auto& arg: args) {
+        auto info_vec = arg->get_arg_info();
+        vec.insert(vec.end(), info_vec.begin(), info_vec.end());
+    }
+
+    for(const auto& arg: flags) {
+        auto info_vec = arg->get_arg_info();
+        vec.insert(vec.end(), info_vec.begin(), info_vec.end());
+    }
+
+    auto info_vec = mgr.get_arg_info();
+    vec.insert(vec.end(), info_vec.begin(), info_vec.end());
+    
+    return vec;
 }
 
 }

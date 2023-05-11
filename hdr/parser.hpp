@@ -6,6 +6,7 @@
 #include "positional_arg.hpp"
 #include "positional_manager.hpp"
 #include "result.hpp"
+#include "doc_maker.hpp"
 
 #include <string>
 #include <memory>
@@ -36,20 +37,15 @@ public:
     bool help_triggered() const;
     bool version_triggered() const;
 
-    std::string help() const;
     std::string version() const;
 
-    const std::vector<std::string>& get_authors() const;
+    AppInfo get_app_info() const;
+    ArgInfoVec get_arg_info() const;
 
 private:
     Parser() = default;
 
-    std::string name;
-    std::string description;
-    std::string brief;
-    std::string epilog;
-    std::string _version;
-    std::vector<std::string> authors;
+    AppInfo app_info;
 
     FlagsVecType flags;
     ArgsVecType args;
@@ -67,8 +63,6 @@ private:
 
     std::optional<std::string> extract_option(const std::string& str);
     std::optional<ArgsVecType::value_type> get_arg_by_option(const std::string& option);
-    
-    std::string authors_help_str() const;
 };
 
 }

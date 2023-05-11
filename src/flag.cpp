@@ -1,6 +1,5 @@
 #include "flag.hpp"
 #include "rcp_error.hpp"
-#include <format>
 
 namespace rcp {
 
@@ -44,15 +43,16 @@ void Flag::call() {
     called = true;
 }
 
-std::string Flag::help() const {
-    std::string res;
-    if (allow_short) {
-        res += std::format("-{}  ", name[0]);
-    }
-    if (allow_long) {
-        res += std::format("--{}  ", name);
-    }
-    return res + description;
+ArgInfoVec Flag::get_arg_info() const {
+    ArgInfo info{Type::other};
+    if (allow_short)
+        info.short_version = std::string{name[0]};
+    if (allow_long)
+        info.long_version = name;
+    info.description = description;
+    info.value = name;
+    
+    return {info};
 }
 
 FlagBuilder::FlagBuilder(const std::string& name) 

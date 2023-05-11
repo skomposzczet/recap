@@ -20,17 +20,6 @@ TEST(PositionalArgTest, valueSet_returnsValue) {
     ASSERT_EQ(expected, arg->get().value());
 }
 
-TEST(PositionalArgTest, descriptionSet_returnsHelpWithDescription) {
-    const std::string test_desc{"test description"};
-    auto arg = PositionalArgBuilder(TEST_ARG_NAME)
-        .with_description(test_desc)
-        .get();
-
-    const std::string expected = std::format("-{}  --{}  <{}>  {}", 
-        TEST_ARG_NAME[0], TEST_ARG_NAME, util::upper(TEST_ARG_NAME), test_desc);
-    ASSERT_EQ(expected, arg->help());
-}
-
 TEST(PositionalArgTest, orderNotSet_defaultOrderGiven) {
     auto arg1 = PositionalArgBuilder(TEST_ARG_NAME).get();
     auto arg2 = PositionalArgBuilder(TEST_ARG_NAME).get();
@@ -108,4 +97,29 @@ TEST(PositionalArgTest, argRequired_isRequired) {
         .required()
         .get();
     ASSERT_TRUE(arg->is_required());
+}
+
+TEST(PositionalArgTest, defaultPosArg_argInfoReqIsFalse) {
+    auto arg = PositionalArgBuilder(TEST_ARG_NAME)
+        .get();
+
+    auto info = arg->get_arg_info().front();
+
+    ASSERT_EQ(Type::positional, info.type);
+    ASSERT_EQ(TEST_ARG_NAME, info.value);
+    ASSERT_EQ(arg->get_order(), info.order);
+    ASSERT_FALSE(info.required);
+}
+
+TEST(PositionalArgTest, defaultPosArg_argInfoReqIsTrue) {
+    auto arg = PositionalArgBuilder(TEST_ARG_NAME)
+        .required()
+        .get();
+
+    auto info = arg->get_arg_info().front();
+
+    ASSERT_EQ(Type::positional, info.type);
+    ASSERT_EQ(TEST_ARG_NAME, info.value);
+    ASSERT_EQ(arg->get_order(), info.order);
+    ASSERT_TRUE(info.required);
 }

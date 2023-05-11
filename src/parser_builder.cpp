@@ -3,36 +3,36 @@
 namespace rcp {
 
 ParserBuilder::ParserBuilder(const std::string& name) {
-    parser.name = name;
+    parser.app_info.name = name;
 }
 
 ParserBuilder& ParserBuilder::description(const std::string& description) {
-    parser.description = description;
+    parser.app_info.description.full = description;
     return *this;
 }
 
 ParserBuilder& ParserBuilder::brief(const std::string& brief) {
-    parser.brief = brief;
+    parser.app_info.description.brief = brief;
     return *this;
 }
 
 ParserBuilder& ParserBuilder::epilog(const std::string& epilog) {
-    parser.epilog = epilog;
+    parser.app_info.description.epilog = epilog;
     return *this;
 }
 
 ParserBuilder& ParserBuilder::version(const std::string& version) {
-    parser._version = version;
+    parser.app_info.version = version;
     return *this;
 }
 
 ParserBuilder& ParserBuilder::author(const std::string& new_author) {
-    parser.authors.push_back(new_author);
+    parser.app_info.authors.push_back(new_author);
     return *this;
 }
 
 ParserBuilder& ParserBuilder::authors(std::initializer_list<std::string> authors) {
-    parser.authors.insert(parser.authors.end(), authors.begin(), authors.end());
+    parser.app_info.authors.insert(parser.app_info.authors.end(), authors.begin(), authors.end());
     return *this;
 }
 

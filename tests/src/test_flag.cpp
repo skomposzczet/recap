@@ -55,15 +55,6 @@ TEST(FlagTest, forbidShortBuild_throwsOnBuild) {
     ASSERT_THROW(bldr.get(), BuildError);
 }
 
-TEST(FlagTest, descriptionSet_descriptionContainedInHelpString) {
-    const std::string desc{"test description"};
-    auto flag = FlagBuilder(TEST_FLAG_NAME)
-        .with_description(desc)
-        .get();
-
-    ASSERT_TRUE(flag->help().find(desc) != std::string::npos);
-}
-
 TEST(FlagTest, ambiguousFlags_returnsTrue) {
     auto flag1 = FlagBuilder(TEST_FLAG_NAME).get();
     auto flag2 = FlagBuilder(TEST_FLAG_NAME).get();
@@ -74,4 +65,26 @@ TEST(FlagTest, notAmbiguousFlags_returnsFalse) {
     auto flag1 = FlagBuilder(TEST_FLAG_NAME).get();
     auto flag2 = FlagBuilder("other_name").get();
     ASSERT_FALSE(flag1->is_ambiguous(*flag2));
+}
+
+TEST(FlagTest, defaultFlag_returnsArgInfoWithShortOnly) {
+    auto flag = FlagBuilder(TEST_FLAG_NAME).get();
+
+    auto info = flag->get_arg_info().front();
+
+    ASSERT_EQ(Type::other, info.type);
+    ASSERT_EQ(TEST_FLAG_NAME, info.value);
+    ASSERT_TRUE(info.short_version.has_value());
+    ASSERT_FALSE(info.long_version.has_value());
+}
+
+TEST(FlagTest, flagWithLongVersion_returnsArgInfoWithShortAndLong) {
+    auto flag = FlagBuilder(TEST_FLAG_NAME).allow_long().get();
+
+    auto info = flag->get_arg_info().front();
+
+    ASSERT_EQ(Type::other, info.type);
+    ASSERT_EQ(TEST_FLAG_NAME, info.value);
+    ASSERT_TRUE(info.short_version.has_value());
+    ASSERT_TRUE(info.long_version.has_value());
 }

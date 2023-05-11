@@ -24,7 +24,7 @@ public:
     bool is_triggered(const std::string& option) const override;
     bool is_ambiguous(const IArg& other) const override;
 
-    std::string help() const override;
+    ArgInfoVec get_arg_info() const override;
 
 private:
     IValueArg::OptionValue value;
@@ -32,7 +32,13 @@ private:
     std::string name;
     std::string description;
 
+    std::vector<std::string> aliases;
+
     std::unique_ptr<ConditionBunch> conditions;
+
+    void append_base_arg_info(ArgInfoVec& vec) const;
+    void append_aliases_arg_info(ArgInfoVec& vec) const;
+
 };
 
 class ArgBuilder
@@ -45,6 +51,8 @@ public:
     ArgBuilder& with_description(const std::string& description);
     ArgBuilder& with_condition(const Condition& condition);
     ArgBuilder& with_conditions(const ConditionBunch& bunch);
+    ArgBuilder& with_alias(const std::string& alias);
+    ArgBuilder& with_aliases(const std::vector<std::string>& aliases);
 
 private:
     std::shared_ptr<Arg> arg;
