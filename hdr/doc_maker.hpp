@@ -65,9 +65,6 @@ private:
     static std::string arg_info_to_str(const ArgInfo& info);
 };
 
-std::string arg_info_vec_to_str(ArgInfoVec& info_vec);
-std::string arg_info_to_str(const ArgInfo& info);
-
 }
 
 #endif // _RCP_DOC_MAKER_H_
