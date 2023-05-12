@@ -19,7 +19,7 @@ namespace rcp {
 using FlagsVecType = std::vector<std::shared_ptr<Flag>>;
 using ArgsVecType = std::vector<std::shared_ptr<Arg>>;
 
-using ParseResult = Result<>;
+using ParseResult = Result<>; 
 
 class Parser
 {
@@ -38,9 +38,8 @@ public:
     bool version_triggered() const;
 
     std::string version() const;
-
-    AppInfo get_app_info() const;
-    ArgInfoVec get_arg_info() const;
+    template<typename T = NixDocMaker> requires CanGenerate<T>
+    T help() const;
 
 private:
     Parser() = default;
@@ -63,7 +62,16 @@ private:
 
     std::optional<std::string> extract_option(const std::string& str);
     std::optional<ArgsVecType::value_type> get_arg_by_option(const std::string& option);
+
+    AppInfo get_app_info() const;
+    ArgInfoVec get_arg_info() const;
+
 };
+
+template<typename T> requires CanGenerate<T>
+T Parser::help() const {
+    return T::generate(get_app_info(), get_arg_info());
+}
 
 }
 

@@ -5,6 +5,8 @@
 #include <optional>
 #include <vector>
 
+namespace rcp {
+
 using OptStr = std::optional<std::string>;
 
 struct AppInfo {
@@ -33,5 +35,13 @@ struct ArgInfo {
     OptStr value;
     std::string description;
 };
+
+template <typename T>
+concept CanGenerate = requires(T t) {
+    { T::generate(AppInfo{}, std::vector<ArgInfo>{}) } -> std::same_as<T>;
+    { t.to_screen() } -> std::same_as<void>;
+};
+
+}
 
 #endif // _RCP_DOC_MAKER_H_
