@@ -1,5 +1,5 @@
-#ifndef _UTIL_H_
-#define _UTIL_H_
+#ifndef _RCP_UTIL_H_
+#define _RCP_UTIL_H_
 
 #include <string>
 #include <sstream>
@@ -18,9 +18,8 @@ std::string cat(Args&&... args)
     return oss.str();
 }
 
-
 }
 
 }
 
-#endif // _UTIL_H_
+#endif // _RCP_UTIL_H_
