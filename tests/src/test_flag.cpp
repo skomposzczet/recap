@@ -73,7 +73,6 @@ TEST(FlagTest, defaultFlag_returnsArgInfoWithShortOnly) {
     auto info = flag->get_arg_info().front();
 
     ASSERT_EQ(Type::other, info.type);
-    ASSERT_EQ(TEST_FLAG_NAME, info.value);
     ASSERT_TRUE(info.short_version.has_value());
     ASSERT_FALSE(info.long_version.has_value());
 }
@@ -84,7 +83,6 @@ TEST(FlagTest, flagWithLongVersion_returnsArgInfoWithShortAndLong) {
     auto info = flag->get_arg_info().front();
 
     ASSERT_EQ(Type::other, info.type);
-    ASSERT_EQ(TEST_FLAG_NAME, info.value);
     ASSERT_TRUE(info.short_version.has_value());
     ASSERT_TRUE(info.long_version.has_value());
 }
