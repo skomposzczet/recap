@@ -9,8 +9,6 @@
 
 namespace rcp {
 
-using ArgInfoVec = std::vector<ArgInfo>;
-
 class IArg
 {
 public:
