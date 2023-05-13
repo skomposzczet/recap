@@ -4,16 +4,6 @@
 
 namespace rcp {
 
-PosArgManager::PosArgManager() {
-    it = args.begin();
-}
-
-PosArgManager::PosArgManager(const PosArgManager& other) 
-    : args{other.args}
-{
-    it = args.begin();
-}
-
 std::optional<IValueArg::OptionValue> PosArgManager::get(const std::string& arg_name) const {
     auto res = std::find_if(args.begin(), args.end(), [&arg_name](const auto& arg) {
         return arg.second->is_named(arg_name);
@@ -27,7 +17,6 @@ std::optional<IValueArg::OptionValue> PosArgManager::get(const std::string& arg_
 
 void PosArgManager::add(value_type arg) {
     args.emplace(arg->get_order(), arg);
-    it = args.begin();
 }
 
 ArgInfoVec PosArgManager::get_arg_info() const {
@@ -37,14 +26,21 @@ ArgInfoVec PosArgManager::get_arg_info() const {
     return vec;
 }
 
-PosArgManager::container::iterator PosArgManager::next() {
-    if (it == args.end())
-        return it;
-    return it++;
-}
+Result<PosArgManager::value_type> PosArgManager::get_next_after(long long prev_order) const {
+    if (args.empty())
+        return ResultFactory::err<PosArgManager::value_type>("No positional args.");
 
-PosArgManager::container::iterator PosArgManager::end() {
-    return args.end();
+    if (prev_order < 0)
+        return ResultFactory::ok((*args.begin()).second);
+    
+    PositionalArg::order_type prev = static_cast<PositionalArg::order_type>(prev_order);
+    for(const auto& [order, arg]: args) {
+        if (order > prev)
+            return ResultFactory::ok(arg);
+    }
+
+    std::string err_str = util::cat("No positional argument with order higher than ", prev_order);
+    return ResultFactory::err<PosArgManager::value_type>(err_str);
 }
 
 Result<> PosArgManager::check_required_satisfied() const {

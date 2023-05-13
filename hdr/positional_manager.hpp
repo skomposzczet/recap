@@ -14,8 +14,7 @@ class PosArgManager
 public:
     using container = std::map<PositionalArg::order_type, std::shared_ptr<PositionalArg>>;
     using value_type = container::mapped_type;
-    PosArgManager();
-    PosArgManager(const PosArgManager& other);
+    PosArgManager() = default;
 
     std::optional<IValueArg::OptionValue> get(const std::string& arg_name) const;
     
@@ -25,12 +24,10 @@ public:
 
     ArgInfoVec get_arg_info() const;
 
-    container::iterator next();
-    container::iterator end();
+    Result<value_type> get_next_after(long long prev_order) const;
 
 private:
     container args;
-    container::iterator it;
 };
 
 }

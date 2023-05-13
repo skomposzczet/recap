@@ -19,50 +19,30 @@ TEST(PosMgrTest, addArgs_accessByNext) {
             .get()
     );
 
-    auto it = mgr.next();
-    ASSERT_NE(it, mgr.end());
-    ASSERT_TRUE((*it).second->is_named(TEST_ARG_NAME));
+    auto res = mgr.get_next_after(-1);
+    ASSERT_TRUE(res.get_ok()->is_named(TEST_ARG_NAME));
 
-    it = mgr.next();
-    ASSERT_NE(it, mgr.end());
-    ASSERT_TRUE((*it).second->is_named(sec_name));
+    res = mgr.get_next_after(res.get_ok()->get_order());
+    ASSERT_TRUE(res.get_ok()->is_named(sec_name));
 }
 
-TEST(PosMgrTest, addArgs_iteratingResetsOnAdd) {
+TEST(PosMgrTest, noArgs_returnsErrOnNext) {
+    PosArgManager mgr;
+
+    auto res = mgr.get_next_after(-1);
+    ASSERT_TRUE(res.is_err());
+}
+
+TEST(PosMgrTest, addArg_getNextAfterReachesEnd) {
     PosArgManager mgr;
     mgr.add(
         PositionalArgBuilder(TEST_ARG_NAME)
             .get()
     );
 
-    auto it = mgr.next();
-    ASSERT_NE(it, mgr.end());
-    ASSERT_TRUE((*it).second->is_named(TEST_ARG_NAME));
-
-    const std::string sec_name = std::string{TEST_ARG_NAME} + "2";
-    mgr.add(
-        PositionalArgBuilder(sec_name)
-            .get()
-    );
-
-    it = mgr.next();
-    ASSERT_NE(it, mgr.end());
-    ASSERT_TRUE((*it).second->is_named(TEST_ARG_NAME));
-
-    it = mgr.next();
-    ASSERT_NE(it, mgr.end());
-    ASSERT_TRUE((*it).second->is_named(sec_name));
-}
-
-TEST(PosMgrTest, addArg_nextReachesEnd) {
-    PosArgManager mgr;
-    mgr.add(
-        PositionalArgBuilder(TEST_ARG_NAME)
-            .get()
-    );
-
-    mgr.next();
-    ASSERT_EQ(mgr.end(), mgr.next());
+    auto res = mgr.get_next_after(-1);
+    res = mgr.get_next_after(res.get_ok()->get_order());
+    ASSERT_TRUE(res.is_err());
 }
 
 TEST(PosMgrTest, addArg_getArgByName) {
@@ -77,13 +57,6 @@ TEST(PosMgrTest, addArg_getArgByName) {
 TEST(PosMgrTest, noArg_getReturnsNull) {
     PosArgManager mgr;
     ASSERT_FALSE(mgr.get(TEST_ARG_NAME).has_value());
-}
-
-TEST(PosMgrTest, copyCtor_itPointsToNewMap) {
-    PosArgManager mgr1;
-    PosArgManager mgr2 = mgr1;
-    
-    ASSERT_NE(mgr1.next(), mgr2.next());
 }
 
 TEST(PosMgrTest, notRequiredArgs_requiredSatisfied) {
@@ -121,7 +94,23 @@ TEST(PosMgrTest, requiredArg_valueSetRequiredSatisfied) {
             .get()
     );
 
-    mgr.next()->second->set("");
+    mgr.get_next_after(-1).get_ok()->set("");
 
     ASSERT_TRUE(mgr.check_required_satisfied().is_ok());
+}
+
+TEST(PosMgrTest, getNextAfter_minusValAlwaysReturnsFirst) {
+    PosArgManager mgr;
+    mgr.add(
+        PositionalArgBuilder("any")
+            .get()
+    );
+    mgr.add(
+        PositionalArgBuilder(TEST_ARG_NAME)
+            .get()
+    );
+
+    auto res1 = mgr.get_next_after(-1).get_ok();
+    auto res2 = mgr.get_next_after(-1).get_ok();
+    ASSERT_EQ(res1, res2);
 }
