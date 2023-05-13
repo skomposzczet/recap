@@ -14,7 +14,7 @@
 using namespace rcp;
 
 constexpr char TEST_APP_NAME[]{"test_app_name"};
-constexpr char TEST_ARG_NAME[]{"test arg name"};
+constexpr char TEST_ARG_NAME[]{"test_arg_name"};
 constexpr char TEST_COND_NAME[]{"test_cond_name"};
 
 std::vector<std::string> shuffle_args(std::vector<std::vector<std::string>>& rcargs, const std::string& name) {
@@ -240,4 +240,9 @@ TEST(ParserTest, requiredArgs_parseNotValidThrows) {
     const char* args[] = {TEST_APP_NAME};
 
     ASSERT_THROW(parser.parse(LOCAL_SIZE(), args), ParseError);
+}
+
+TEST(ParserTest, wasCalledNotAddedFlag_throws) {
+    Parser parser = ParserBuilder(TEST_APP_NAME).get();
+    ASSERT_THROW(parser.help_triggered(), ParseError);
 }
