@@ -60,10 +60,11 @@ private:
     ParseResult parse_flag(const std::string& option);
     ParseResult parse_key_arg(const std::string& option);
 
-    std::optional<std::string> extract_option(const std::string& str);
-    std::optional<ArgsVecType::value_type> get_arg_by_option(const std::string& option);
+    static std::optional<std::string> extract_option(const std::string& str);
+    Result<ArgsVecType::value_type> get_arg_by_option(const std::string& option) const;
+    Result<FlagsVecType::value_type> get_flag_by_option(const std::string& option) const;
 
-    AppInfo get_app_info() const;
+    const AppInfo& get_app_info() const;
     ArgInfoVec get_arg_info() const;
 
 };

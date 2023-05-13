@@ -76,8 +76,8 @@ ParseResult Parser::parse_flag(const std::string& option) {
 
 ParseResult Parser::parse_key_arg(const std::string& option) {
     auto res = get_arg_by_option(option);
-    if (!res.has_value())
-        return ResultFactory::err(util::cat("No such arg registered: ", option));
+    if (!res.is_ok())
+        return ResultFactory::err(res.get_err());
 
     if (input.empty())
         return ResultFactory::err(util::cat("Missing value for arg: ", option));
@@ -85,18 +85,18 @@ ParseResult Parser::parse_key_arg(const std::string& option) {
     std::string value = input.front();
     input.pop_front();
 
-    return (*res)->set(value);
+    return res.get_ok()->set(value);
 }
 
-std::optional<ArgsVecType::value_type> Parser::get_arg_by_option(const std::string& option) {
+Result<ArgsVecType::value_type> Parser::get_arg_by_option(const std::string& option) const {
     auto res = std::find_if(args.begin(), args.end(), [&option](const auto& arg){
         return arg->is_triggered(option);
     });
 
     if (res == args.end())
-        return {};
+        return ResultFactory::err<ArgsVecType::value_type>(util::cat("No such arg registered: ", option));
 
-    return *res;
+    return ResultFactory::ok(*res);
 }
 
 ParseResult Parser::check_valid_parsing() const {
@@ -140,7 +140,7 @@ ParseResult Parser::check_ambiguity(const IArg& arg) const {
     }
     auto res = mgr.get(arg.get_name());
     if (res.has_value())
-            return ResultFactory::err(util::cat(err_str, "positional arg \"", arg.get_name(), "\" already exists"));
+        return ResultFactory::err(util::cat(err_str, "positional arg \"", arg.get_name(), "\" already exists"));
 
     return ResultFactory::ok();
 }
@@ -168,21 +168,28 @@ bool Parser::version_triggered() const {
 }
 
 bool Parser::was_called(const std::string& arg_name) const {
-    auto res = std::find_if(flags.begin(), flags.end(), [&arg_name](const auto& flag){
-        return flag->is_named(arg_name);
+    auto res = get_flag_by_option(arg_name);
+    if (res.is_ok())
+        return res.get_ok()->was_called();
+    throw ParseError(res.get_err());
+}
+
+Result<FlagsVecType::value_type> Parser::get_flag_by_option(const std::string& option) const {
+    auto res = std::find_if(flags.begin(), flags.end(), [&option](const auto& arg){
+        return arg->is_named(option);
     });
 
     if (res == flags.end())
-        throw ParseError(std::string{"Unregistered flag: "} + arg_name);
+        return ResultFactory::err<FlagsVecType::value_type>(util::cat("No such flag registered: ", option));
 
-    return (*res)->was_called();
+    return ResultFactory::ok(*res);
 }
 
 std::string Parser::version() const {
     return app_info.name + "(" + app_info.version + ")";
 }
 
-AppInfo Parser::get_app_info() const {
+const AppInfo& Parser::get_app_info() const {
     return app_info;
 }
 
