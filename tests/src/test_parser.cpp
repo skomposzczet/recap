@@ -242,6 +242,19 @@ TEST(ParserTest, requiredArgs_parseNotValidThrows) {
     ASSERT_THROW(parser.parse(LOCAL_SIZE(), args), ParseError);
 }
 
+TEST(ParserTest, ignoreRequiredOnHelp_parseWithoutReqNoThrow) {
+    Parser parser = ParserBuilder(TEST_APP_NAME)
+        .help_enabled()
+        .ignore_required_on_help()
+        .get();
+    parser.add_positional_argument(PositionalArgBuilder(TEST_ARG_NAME).required().get());
+
+    const char* args[] = {TEST_APP_NAME, "--help"};
+
+    ASSERT_TRUE(parser.help_triggered());
+    ASSERT_NO_THROW(parser.parse(LOCAL_SIZE(), args));
+}
+
 TEST(ParserTest, wasCalledNotAddedFlag_throws) {
     Parser parser = ParserBuilder(TEST_APP_NAME).get();
     ASSERT_THROW(parser.help_triggered(), ParseError);

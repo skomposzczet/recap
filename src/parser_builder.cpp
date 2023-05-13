@@ -58,6 +58,11 @@ ParserBuilder& ParserBuilder::version_enabled() {
     return *this;
 }
 
+ParserBuilder& ParserBuilder::ignore_required_on_help() {
+    parser.ignore_req_on_help = true;
+    return *this;
+}
+
 Parser ParserBuilder::get() const {
     return parser;
 }

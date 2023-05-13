@@ -1,5 +1,5 @@
-#ifndef _PARSER_BUILDER_H_
-#define _PARSER_BUILDER_H_
+#ifndef _RCP_PARSER_BUILDER_H_
+#define _RCP_PARSER_BUILDER_H_
 
 #include "parser.hpp"
 #include <string>
@@ -21,6 +21,8 @@ public:
     ParserBuilder& help_enabled();    
     ParserBuilder& version_enabled();    
 
+    ParserBuilder& ignore_required_on_help();
+
     Parser get() const;
 
 private:
@@ -30,4 +32,4 @@ private:
 
 }
 
-#endif // _PARSER_BUILDER_H_
+#endif // _RCP_PARSER_BUILDER_H_

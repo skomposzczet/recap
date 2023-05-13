@@ -100,6 +100,11 @@ Result<ArgsVecType::value_type> Parser::get_arg_by_option(const std::string& opt
 }
 
 ParseResult Parser::check_valid_parsing() const {
+    if (ignore_req_on_help) {
+        auto res = get_flag_by_option("help");
+        if (res.is_ok() && res.get_ok()->was_called())
+            return ResultFactory::ok();
+    }
     return mgr.check_required_satisfied();
 }
 

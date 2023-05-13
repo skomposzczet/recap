@@ -50,6 +50,8 @@ private:
     ArgsVecType args;
     PosArgManager mgr;
 
+    bool ignore_req_on_help = false;
+
     std::list<std::string> input;
 
     ParseResult check_ambiguity(const IArg& arg) const;
