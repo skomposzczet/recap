@@ -250,6 +250,7 @@ TEST(ParserTest, ignoreRequiredOnHelp_parseWithoutReqNoThrow) {
     parser.add_positional_argument(PositionalArgBuilder(TEST_ARG_NAME).required().get());
 
     const char* args[] = {TEST_APP_NAME, "--help"};
+    parser.parse(LOCAL_SIZE(), args);
 
     ASSERT_TRUE(parser.help_triggered());
     ASSERT_NO_THROW(parser.parse(LOCAL_SIZE(), args));
