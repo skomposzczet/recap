@@ -50,6 +50,7 @@ private:
     ArgsVecType args;
     PosArgManager mgr;
 
+    long long prev_order = -1;
     bool ignore_req_on_help = false;
 
     std::list<std::string> input;

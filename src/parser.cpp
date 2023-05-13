@@ -54,11 +54,13 @@ std::optional<std::string> Parser::extract_option(const std::string& str) {
 }
 
 ParseResult Parser::parse_positional(const std::string& value) {
-    auto it = mgr.next();
-    if (it == mgr.end())
-        return ResultFactory::err(util::cat("Unexpected item: ", value));
+    auto res = mgr.get_next_after(prev_order);
+    if (res.is_err())
+        return ResultFactory::err(res.get_err());
 
-    return (*it).second->set(value);
+    auto pos_arg = res.get_ok();
+    prev_order = pos_arg->get_order();
+    return pos_arg->set(value);
 }
 
 ParseResult Parser::parse_flag(const std::string& option) {
