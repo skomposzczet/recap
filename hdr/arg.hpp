@@ -33,6 +33,8 @@ private:
     std::string description;
 
     std::vector<std::string> aliases;
+    bool short_allowed = true;
+    bool long_allowed = true;
 
     std::unique_ptr<ConditionBunch> conditions;
 
@@ -53,6 +55,9 @@ public:
     ArgBuilder& with_conditions(const ConditionBunch& bunch);
     ArgBuilder& with_alias(const std::string& alias);
     ArgBuilder& with_aliases(const std::vector<std::string>& aliases);
+    ArgBuilder& forbid_short();
+    ArgBuilder& forbid_long();
+
 
 private:
     std::shared_ptr<Arg> arg;

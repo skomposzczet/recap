@@ -39,6 +39,32 @@ TEST(ArgTest, isTriggered_triggeredByShortAndLongVersion) {
     ASSERT_TRUE(arg->is_triggered(std::string{TEST_ARG_NAME[0]}));
 }
 
+TEST(ArgTest, onlyShortAllowed_triggeredOnlyByShort) {
+    auto arg = ArgBuilder(TEST_ARG_NAME)
+        .forbid_long()
+        .get();
+
+    ASSERT_FALSE(arg->is_triggered(TEST_ARG_NAME));
+    ASSERT_TRUE(arg->is_triggered(std::string{TEST_ARG_NAME[0]}));
+}
+
+TEST(ArgTest, onlyLongAllowed_triggeredOnlyByLong) {
+    auto arg = ArgBuilder(TEST_ARG_NAME)
+        .forbid_short()
+        .get();
+
+    ASSERT_TRUE(arg->is_triggered(TEST_ARG_NAME));
+    ASSERT_FALSE(arg->is_triggered(std::string{TEST_ARG_NAME[0]}));
+}
+
+TEST(ArgTest, shortAndLongNotForbid_getThrows) {
+    auto arg = ArgBuilder(TEST_ARG_NAME)
+        .forbid_short()
+        .forbid_long();
+
+    ASSERT_THROW(arg.get(), BuildError);
+}
+
 TEST(ArgTest, ambiguousArgs_returnsTrue) {
     auto arg1 = ArgBuilder(TEST_ARG_NAME).get();
     auto arg2 = ArgBuilder(TEST_ARG_NAME).get();

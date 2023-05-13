@@ -26,8 +26,10 @@ bool Arg::is_named(const std::string& arg_name) const {
 
 bool Arg::is_triggered(const std::string& option) const {
     bool res = false;
-    res += option == name;
-    res += option.size() == 1 && option[0] == name[0];
+    if (long_allowed)
+        res += option == name;
+    if (short_allowed)
+        res += option.size() == 1 && option[0] == name[0];
     for (const std::string& alias: aliases) 
         res += option == alias;
     return res;
@@ -36,8 +38,10 @@ bool Arg::is_triggered(const std::string& option) const {
 bool Arg::is_ambiguous(const IArg& other) const {
     bool res = false;
     res += other.is_named(name);
-    res += other.is_triggered(name);
-    res += other.is_triggered(std::string{name[0]});
+    if (long_allowed)
+        res += other.is_triggered(name);
+    if (short_allowed)
+        res += other.is_triggered(std::string{name[0]});
     for (const std::string& alias: aliases) 
         res += other.is_triggered(alias);
     return res;
@@ -81,7 +85,9 @@ ArgBuilder::ArgBuilder(const std::string& name)
 }
 
 std::shared_ptr<Arg> ArgBuilder::get() {
-    return arg;
+    if (arg->short_allowed || arg->long_allowed)
+        return arg;
+    throw BuildError("At least one trigger option is required ; consider allowing short or long");
 }
 
 ArgBuilder& ArgBuilder::default_value(const std::string& def) {
@@ -112,6 +118,16 @@ ArgBuilder& ArgBuilder::with_alias(const std::string& alias) {
 ArgBuilder& ArgBuilder::with_aliases(const std::vector<std::string>& aliases) {
     std::vector<std::string>& aa = arg->aliases;
     aa.insert(aa.end(), aliases.begin(), aliases.end());
+    return *this;
+}
+
+ArgBuilder& ArgBuilder::forbid_short() {
+    arg->short_allowed = false;
+    return *this;
+}
+
+ArgBuilder& ArgBuilder::forbid_long() {
+    arg->long_allowed = false;
     return *this;
 }
 
