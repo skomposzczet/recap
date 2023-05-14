@@ -114,3 +114,17 @@ TEST(PosMgrTest, getNextAfter_minusValAlwaysReturnsFirst) {
     auto res2 = mgr.get_next_after(-1).get_ok();
     ASSERT_EQ(res1, res2);
 }
+
+TEST(PosMgrTest, addArgsWithSameOrder_addThrows) {
+    PosArgManager mgr;
+    unsigned ord = 99;
+    auto first = PositionalArgBuilder(TEST_ARG_NAME)
+        .order(ord)
+        .get();
+    auto second = PositionalArgBuilder("any")
+        .order(ord)
+        .get();
+
+    mgr.add(first);
+    ASSERT_THROW(mgr.add(second), BuildError);
+}

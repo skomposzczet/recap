@@ -15,8 +15,11 @@ std::optional<IValueArg::OptionValue> PosArgManager::get(const std::string& arg_
     return {};
 }
 
-void PosArgManager::add(value_type arg) {
-    args.emplace(arg->get_order(), arg);
+void PosArgManager::add(PosArgManager::value_type arg) {
+    const auto order = arg->get_order();
+    if (args.contains(order))
+        throw BuildError(util::cat("Positional arg with order ", order, " already exists."));
+    args.emplace(order, arg);
 }
 
 ArgInfoVec PosArgManager::get_arg_info() const {
