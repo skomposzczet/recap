@@ -1,11 +1,9 @@
 # recap
+C++ library for library for command line argument parsing.
 
+# How to build
 ## Prerequisites
-1. Project build in `c++20`, therefore `gcc` in `13.1` version or higher is required:
-    ```bash
-    gcc --version
-    # gcc (GCC) 13.1.0
-    ```
+1. Project written in `c++20`, therefore `GCC 10.2` or `Clang 12.0.0` and `libstdc++` 10 or `libc++ 7` recommended.
 ## Building project
 1. Run makefile
     ```bash
