@@ -40,8 +40,8 @@ TEST(ParserTest, enabledHelpVersion_isNotTriggered) {
     const char* args[] = {TEST_APP_NAME};
     parser.parse(1, args);
     
-    ASSERT_FALSE(parser.help_triggered());
-    ASSERT_FALSE(parser.version_triggered());
+    ASSERT_FALSE(parser.help_toggled());
+    ASSERT_FALSE(parser.version_toggled());
 }
 
 TEST(ParserTest, enabledHelp_parsesHelpOption) {
@@ -49,7 +49,7 @@ TEST(ParserTest, enabledHelp_parsesHelpOption) {
     const char* args[] = {TEST_APP_NAME, "--help"};
     parser.parse(2, args);
     
-    ASSERT_TRUE(parser.help_triggered());
+    ASSERT_TRUE(parser.help_toggled());
 }
 
 TEST(ParserTest, disabledHelp_throwsParsingHelpOption) {
@@ -63,7 +63,7 @@ TEST(ParserTest, enabledVersion_parsesVersionOption) {
     const char* args[] = {TEST_APP_NAME, "--version"};
     parser.parse(2, args);
     
-    ASSERT_TRUE(parser.version_triggered());
+    ASSERT_TRUE(parser.version_toggled());
 }
 
 TEST(ParserTest, disabledVersion_throwsParsingVersionOption) {
@@ -85,7 +85,7 @@ TEST(ParserTest, addFlag_parsesFlag) {
     const char* args[] = {TEST_APP_NAME, arg.data()};
 
     parser.parse(2, args);
-    ASSERT_TRUE(parser.was_called(TEST_ARG_NAME));
+    ASSERT_TRUE(parser.was_toggled(TEST_ARG_NAME));
 }
 
 TEST(ParserTest, addArg_parsesArg) {
@@ -165,7 +165,7 @@ TEST(ParserTest, addMultipleTypeArgs_parsesAllInRandomOrder) {
         ASSERT_EQ(val, parser.get(key)) << dbg_str;
     }
     for (const auto& [key, val]: flag_map) {
-        ASSERT_EQ(val, parser.was_called(key)) << dbg_str;
+        ASSERT_EQ(val, parser.was_toggled(key)) << dbg_str;
     }
 }
 
@@ -252,11 +252,11 @@ TEST(ParserTest, ignoreRequiredOnHelp_parseWithoutReqNoThrow) {
     const char* args[] = {TEST_APP_NAME, "--help"};
     parser.parse(LOCAL_SIZE(), args);
 
-    ASSERT_TRUE(parser.help_triggered());
+    ASSERT_TRUE(parser.help_toggled());
     ASSERT_NO_THROW(parser.parse(LOCAL_SIZE(), args));
 }
 
 TEST(ParserTest, wasCalledNotAddedFlag_throws) {
     Parser parser = ParserBuilder(TEST_APP_NAME).get();
-    ASSERT_THROW(parser.help_triggered(), ParseError);
+    ASSERT_THROW(parser.help_toggled(), ParseError);
 }

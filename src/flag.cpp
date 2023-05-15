@@ -3,8 +3,8 @@
 
 namespace rcp {
 
-bool Flag::was_called() const {
-    return called;
+bool Flag::was_toggled() const {
+    return toggled;
 }
 
 bool Flag::is_named(const std::string& arg_name) const {
@@ -39,8 +39,8 @@ bool Flag::is_ambiguous(const IArg& other) const {
     return res;
 }
 
-void Flag::call() {
-    called = true;
+void Flag::toggle() {
+    toggled = true;
 }
 
 ArgInfoVec Flag::get_arg_info() const {

@@ -13,8 +13,8 @@ class Flag: public IArg
 {
 friend class FlagBuilder;
 public:
-    void call();
-    bool was_called() const;
+    void toggle();
+    bool was_toggled() const;
 
     std::string get_name() const override;
 
@@ -31,7 +31,7 @@ private:
     bool allow_long = false;
     bool allow_short = true;
 
-    bool called = false;
+    bool toggled = false;
 };
 
 class FlagBuilder

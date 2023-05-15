@@ -32,10 +32,10 @@ public:
     void add_positional_argument(PosArgManager::value_type arg);
 
     IValueArg::OptionValue get(const std::string& arg_name) const;
-    bool was_called(const std::string& arg_name) const;
+    bool was_toggled(const std::string& arg_name) const;
     
-    bool help_triggered() const;
-    bool version_triggered() const;
+    bool help_toggled() const;
+    bool version_toggled() const;
 
     std::string version() const;
     template<typename T = NixDocMaker> requires CanGenerate<T>

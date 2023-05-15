@@ -10,15 +10,15 @@ TEST(FlagTest, defaultBuild_notCalledAfterBuild) {
     auto flag = FlagBuilder(TEST_FLAG_NAME)
         .get();
 
-    ASSERT_FALSE(flag->was_called());
+    ASSERT_FALSE(flag->was_toggled());
 }
 
 TEST(FlagTest, defaultBuild_calledAfterCall) {
     auto flag = FlagBuilder(TEST_FLAG_NAME)
         .get();
 
-    flag->call();
-    ASSERT_TRUE(flag->was_called());
+    flag->toggle();
+    ASSERT_TRUE(flag->was_toggled());
 }
 
 TEST(FlagTest, defaultBuild_triggeredOnlyByShortVersion) {

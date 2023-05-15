@@ -72,7 +72,7 @@ ParseResult Parser::parse_flag(const std::string& option) {
         return ResultFactory::err(util::cat("No such flag registered: ", option));
     }
 
-    (*res)->call();
+    (*res)->toggle();
     return ResultFactory::ok();
 }
 
@@ -104,7 +104,7 @@ Result<ArgsVecType::value_type> Parser::get_arg_by_option(const std::string& opt
 ParseResult Parser::check_valid_parsing() const {
     if (ignore_req_on_help) {
         auto res = get_flag_by_option("help");
-        if (res.is_ok() && res.get_ok()->was_called())
+        if (res.is_ok() && res.get_ok()->was_toggled())
             return ResultFactory::ok();
     }
     return mgr.check_required_satisfied();
@@ -166,18 +166,18 @@ IValueArg::OptionValue Parser::get(const std::string& arg_name) const {
     throw ParseError(std::string{"Unregistered arg: "} + arg_name);
 }
 
-bool Parser::help_triggered() const {
-    return was_called("help");
+bool Parser::help_toggled() const {
+    return was_toggled("help");
 }
 
-bool Parser::version_triggered() const {
-    return was_called("version");
+bool Parser::version_toggled() const {
+    return was_toggled("version");
 }
 
-bool Parser::was_called(const std::string& arg_name) const {
+bool Parser::was_toggled(const std::string& arg_name) const {
     auto res = get_flag_by_option(arg_name);
     if (res.is_ok())
-        return res.get_ok()->was_called();
+        return res.get_ok()->was_toggled();
     throw ParseError(res.get_err());
 }
 
