@@ -2,6 +2,7 @@
 #include "positional_arg.hpp"
 #include "flag.hpp"
 #include "arg.hpp"
+
 #include <iostream>
 
 using namespace rcp;
@@ -51,7 +52,7 @@ void add_args(Parser& parser) {
 
 void print_values(const Parser& parser) {
     std::cout << "Flag was";
-    if (!parser.was_called("flag"))
+    if (!parser.was_toggled("flag"))
         std::cout << " not";
     std::cout << " toggled\n";
 
@@ -73,7 +74,7 @@ int main(int argc, const char* argv[]) {
         return 1;
     }
     
-    if (parser.help_triggered()) {
+    if (parser.help_toggled()) {
         parser.help().to_screen();
         return 0;
     }
