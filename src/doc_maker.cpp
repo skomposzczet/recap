@@ -2,6 +2,8 @@
 #include "util.hpp"
 #include <algorithm>
 #include <iostream>
+#include <format>
+#include <numeric>
 
 namespace rcp {
 
@@ -33,14 +35,12 @@ void NixDocMaker::to_screen() const {
 }
 
 void NixDocMaker::create_intro(const AppInfo& info) {
-    res.append(util::cat(
-        info.name, " - ", info.description.brief,
-        "\n\n", info.description.full, "\n"
-    ));
+    res += std::format("DESCRIPTION:\n\t{} - {}\n\n\t{}\n", 
+        info.name, info.description.brief, info.description.full);
 }
 
 void NixDocMaker::create_usage(const ArgInfoVec& infos) {
-    std::string usage = util::cat("\nusage:\n\t./app");
+    std::string usage{"\nUSAGE:\n\t./app"};
 
     if (has_options(infos))
         usage.append(" [options]");
@@ -51,7 +51,7 @@ void NixDocMaker::create_usage(const ArgInfoVec& infos) {
         
         std::string app{arg_info.value.value()};
         if (!arg_info.required)
-            app = util::cat("[", app, "]");
+            app = std::format("[{}]", app);
         
         usage.append(util::cat(" ", app));
     }
@@ -73,20 +73,13 @@ void NixDocMaker::create_arg_section(const ArgInfoVec& infos) {
         return info.type != Type::positional;
     });
     res.append(util::cat(
-        "\noptions:\n", arg_info_vec_to_str(non_pos)
+        "\nOPTIONS:\n", arg_info_vec_to_str(non_pos)
     ));
 }
 
 void NixDocMaker::create_end(const AppInfo& info) {
-    res.append(util::cat(
-        info.description.epilog, "\n\nauthors:"
-    ));
-
-    for (const auto& author: info.authors) {
-        res.append(util::cat(" ", author, ","));
-    }
-
-    res.append("\b \n");
+    std::string authors = std::accumulate(info.authors.begin(), info.authors.end(), std::string{""});
+    res += std::format("AUTHORS:\n\t{}\n\nEPILOG:\n\t{}", authors, info.description.epilog);
 }
 
 std::string NixDocMaker::arg_info_vec_to_str(ArgInfoVec& info_vec) {
@@ -101,14 +94,20 @@ std::string NixDocMaker::arg_info_vec_to_str(ArgInfoVec& info_vec) {
 std::string NixDocMaker::arg_info_to_str(const ArgInfo& info) {
     std::string res{"\t"};
 
-    if (info.short_version.has_value())
-        res += util::cat("-", info.short_version.value(), " ");
-    if (info.long_version.has_value())
-        res += util::cat("--", info.long_version.value(), " ");
+    bool has_short = info.short_version.has_value();
+    bool has_long = info.long_version.has_value();
+
+    if (has_short)
+        res += std::format("-{} ", info.short_version.value());
+    if (has_short && has_long)
+        res += "\b, ";
+    if (has_long)
+        res += std::format("--{} ", info.long_version.value());
+
     if (info.value.has_value())
-        res += util::cat("<", util::upper(info.value.value()), "> ");
+        res += std::format("<{}> ", util::upper(info.value.value()));
     
-    res += util::cat("\b, ", info.description, "\n");
+    res += std::format("\n\t\t{}\n", info.description);
     return res;
 }
 
